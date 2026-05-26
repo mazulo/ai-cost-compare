@@ -35,11 +35,15 @@ def base_table(*columns: tuple[str, dict]) -> Table:
         show_header=True,
         header_style=TABLE_HEADER,
         border_style=TABLE_BORDER,
-        padding=(0, 1),
+        padding=(0, 0),
         expand=False,
         show_edge=True,
     )
     for name, kwargs in columns:
+        width = kwargs.get("width")
+        if width is not None:
+            kwargs.setdefault("min_width", width)
+            kwargs.setdefault("max_width", width)
         table.add_column(name, **kwargs)
     return table
 

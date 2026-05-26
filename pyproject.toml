@@ -1,6 +1,6 @@
 [project]
 name = "claude-cost-compare"
-version = "0.1.1"
+version = "0.1.2"
 description = "Daily Claude cost analysis with before/after comparison and model health signals"
 readme = "README.md"
 license = { text = "MIT" }

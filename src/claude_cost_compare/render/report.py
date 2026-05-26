@@ -31,6 +31,19 @@ from claude_cost_compare.render.formatters import (
 from claude_cost_compare.render.theme import INACTIVE, MUTED, ZERO
 
 MIX_WIDTH = 10
+MIX_COL = MIX_WIDTH + 2
+DATE_COL = 12
+ERA_COL = 8
+COST_COL = 11
+TOKENS_COL = 8
+OPUS_COL = 6
+SONNET_COL = 8
+HAIKU_COL = 7
+WINDOW_COL = 24
+DAYS_COL = 6
+MODEL_COL = 9
+SHARE_COL = 7
+VERDICT_COL = 58
 
 
 def render_report(
@@ -62,18 +75,18 @@ def render_report(
 
 def _daily_columns(*, with_era: bool) -> Table:
     columns: list[tuple[str, dict]] = [
-        ("Date", {"style": "white", "no_wrap": True, "width": 12}),
+        ("Date", {"style": "white", "no_wrap": True, "width": DATE_COL}),
     ]
     if with_era:
-        columns.append(("Era", {"style": MUTED, "no_wrap": True, "width": 7}))
+        columns.append(("Era", {"style": MUTED, "no_wrap": True, "width": ERA_COL}))
     columns.extend(
         [
-            ("Cost", {"justify": "right", "no_wrap": True, "width": 10}),
-            ("Tokens", {"justify": "right", "style": MUTED, "no_wrap": True, "width": 7}),
-            ("Mix", {"no_wrap": True, "width": MIX_WIDTH}),
-            ("Opus", {"justify": "right", "no_wrap": True, "width": 5}),
-            ("Sonnet", {"justify": "right", "no_wrap": True, "width": 6}),
-            ("Haiku", {"justify": "right", "no_wrap": True, "width": 5}),
+            ("Cost", {"justify": "right", "no_wrap": True, "width": COST_COL}),
+            ("Tokens", {"justify": "right", "style": MUTED, "no_wrap": True, "width": TOKENS_COL}),
+            ("Mix", {"no_wrap": True, "width": MIX_COL}),
+            ("Opus", {"justify": "right", "no_wrap": True, "width": OPUS_COL}),
+            ("Sonnet", {"justify": "right", "no_wrap": True, "width": SONNET_COL}),
+            ("Haiku", {"justify": "right", "no_wrap": True, "width": HAIKU_COL}),
         ]
     )
     return base_table(*columns)
@@ -142,14 +155,14 @@ def _render_comparison(
     section(console, "BEFORE vs AFTER", f"Split at {cutoff_str}")
 
     table = base_table(
-        ("Window", {"style": "white", "no_wrap": True, "width": 22}),
-        ("Days", {"justify": "right", "no_wrap": True, "width": 4}),
-        ("Avg/Day", {"justify": "right", "no_wrap": True, "width": 10}),
-        ("Total", {"justify": "right", "no_wrap": True, "width": 10}),
-        ("Mix", {"no_wrap": True, "width": MIX_WIDTH}),
-        ("Opus", {"justify": "right", "no_wrap": True, "width": 5}),
-        ("Sonnet", {"justify": "right", "no_wrap": True, "width": 6}),
-        ("Haiku", {"justify": "right", "no_wrap": True, "width": 5}),
+        ("Window", {"style": "white", "no_wrap": True, "width": WINDOW_COL}),
+        ("Days", {"justify": "right", "no_wrap": True, "width": DAYS_COL}),
+        ("Avg/Day", {"justify": "right", "no_wrap": True, "width": COST_COL}),
+        ("Total", {"justify": "right", "no_wrap": True, "width": COST_COL}),
+        ("Mix", {"no_wrap": True, "width": MIX_COL}),
+        ("Opus", {"justify": "right", "no_wrap": True, "width": OPUS_COL}),
+        ("Sonnet", {"justify": "right", "no_wrap": True, "width": SONNET_COL}),
+        ("Haiku", {"justify": "right", "no_wrap": True, "width": HAIKU_COL}),
     )
 
     def add_window(label: str, stats: WindowStats | None, label_style: str) -> None:
@@ -231,12 +244,12 @@ def _render_signal(
     section(console, "REAL SIGNAL", subtitle)
 
     table = base_table(
-        ("Model", {"style": "white", "no_wrap": True, "width": 7}),
-        ("Avg/Day", {"justify": "right", "no_wrap": True, "width": 10}),
-        ("Total", {"justify": "right", "no_wrap": True, "width": 10}),
-        ("Share", {"justify": "right", "no_wrap": True, "width": 5}),
-        ("Mix", {"no_wrap": True, "width": MIX_WIDTH}),
-        ("Verdict", {"width": 46, "no_wrap": True}),
+        ("Model", {"style": "white", "no_wrap": True, "width": MODEL_COL}),
+        ("Avg/Day", {"justify": "right", "no_wrap": True, "width": COST_COL}),
+        ("Total", {"justify": "right", "no_wrap": True, "width": COST_COL}),
+        ("Share", {"justify": "right", "no_wrap": True, "width": SHARE_COL}),
+        ("Mix", {"no_wrap": True, "width": MIX_COL}),
+        ("Verdict", {"width": VERDICT_COL, "no_wrap": True}),
     )
 
     b_op = pct(before.mix.get("opus", 0.0), before.total) if before else None
