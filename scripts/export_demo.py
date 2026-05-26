@@ -50,7 +50,8 @@ SIGNAL_WIDTH = MODEL_COL + COST_COL + COST_COL + SHARE_COL + MIX_COL + VERDICT_C
 DEFAULT_WIDTH = max(DAILY_WIDTH, COMPARISON_WIDTH, SIGNAL_WIDTH) + 16
 
 _FONT_FACE_RE = re.compile(
-    r'@font-face \{\s*font-family: "Fira Code";\s*src: local\("[^"]+"\),[\s\S]*?font-weight: (\d+);\s*\}'
+    r'@font-face \{\s*font-family: "Fira Code";\s*src: local\("[^"]+"\),'
+    r'[\s\S]*?font-weight: (\d+);\s*\}'
 )
 _VIEWBOX_RE = re.compile(r'viewBox="0 0 ([\d.]+) ([\d.]+)"')
 _CHROME_CANDIDATES = (
