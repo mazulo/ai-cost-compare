@@ -1,29 +1,134 @@
 name: Publish
 
 on:
-  push:
-    tags:
-      - "v*"
   workflow_dispatch:
+    inputs:
+      version:
+        description: Release version (defaults to pyproject.toml; must match __init__.py)
+        required: false
+
+concurrency:
+  group: release
+  cancel-in-progress: false
 
 permissions:
-  contents: read
+  contents: write
   id-token: write
 
 jobs:
-  publish:
-    name: Publish to PyPI
+  release:
+    name: Publish release
     runs-on: ubuntu-latest
     environment: pypi
+    outputs:
+      version: ${{ steps.meta.outputs.version }}
+      tag: ${{ steps.meta.outputs.tag }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
+
+      - name: Resolve release metadata
+        id: meta
+        run: |
+          VERSION="${{ inputs.version }}"
+          if [ -z "$VERSION" ]; then
+            VERSION=$(python3 -c "import tomllib; print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
+          fi
+          PYPROJECT=$(python3 -c "import tomllib; print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
+          INIT=$(python3 -c "import re; from pathlib import Path; t=Path('src/claude_cost_compare/__init__.py').read_text(); print(re.search(r'__version__ = \"([^\"]+)\"', t).group(1))")
+          if [ "$VERSION" != "$PYPROJECT" ] || [ "$VERSION" != "$INIT" ]; then
+            echo "::error::Version mismatch (input=$VERSION pyproject=$PYPROJECT __init__=$INIT). Bump pyproject.toml and __init__.py on main first."
+            exit 1
+          fi
+          if git rev-parse "v$VERSION" >/dev/null 2>&1; then
+            echo "::error::Tag v$VERSION already exists"
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Quality checks
+        run: uv sync --dev && uv run ruff check . && uv run pytest
 
       - name: Build packages
         run: uv build
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+
+      - name: Fetch PyPI sdist metadata
+        id: pypi
+        run: |
+          VERSION="${{ steps.meta.outputs.version }}"
+          for attempt in 1 2 3 4 5 6; do
+            if uv run python scripts/fetch_pypi_sdist.py "$VERSION"; then
+              exit 0
+            fi
+            echo "Waiting for PyPI index (attempt $attempt)..."
+            sleep 10
+          done
+          echo "::error::PyPI sdist metadata not available for $VERSION"
+          exit 1
+
+      - name: Update Homebrew formula checksum
+        run: |
+          uv run python scripts/update_formula.py \
+            --url "${{ steps.pypi.outputs.url }}" \
+            --sha256 "${{ steps.pypi.outputs.sha256 }}"
+
+      - name: Commit formula update, tag, and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Formula/claude-cost-compare.rb
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: bump Homebrew formula to v${{ steps.meta.outputs.version }}"
+          fi
+          git tag -a "${{ steps.meta.outputs.tag }}" -m "Release ${{ steps.meta.outputs.tag }}"
+          git push origin HEAD:main
+          git push origin "${{ steps.meta.outputs.tag }}"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.meta.outputs.tag }}
+          name: ${{ steps.meta.outputs.tag }}
+          generate_release_notes: true
+
+  update-formula-resources:
+    name: Refresh Homebrew Python resources
+    needs: release
+    runs-on: macos-14
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Sync latest main
+        run: git pull --ff-only origin main
+
+      - name: Update Python resources from PyPI
+        run: |
+          brew update-python-resources Formula/claude-cost-compare.rb \
+            --package-name claude-cost-compare \
+            --version "${{ needs.release.outputs.version }}"
+
+      - name: Commit resource updates
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Formula/claude-cost-compare.rb
+          if git diff --staged --quiet; then
+            echo "No Homebrew resource changes"
+            exit 0
+          fi
+          git commit -m "chore: refresh Homebrew formula Python resources for v${{ needs.release.outputs.version }}"
+          git push origin HEAD:main

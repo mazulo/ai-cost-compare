@@ -26,8 +26,8 @@ dependencies = [
 claude-cost-compare = "claude_cost_compare.cli:run"
 
 [project.urls]
-Homepage = "https://github.com/patrickmazulo/claude-cost-compare"
-Repository = "https://github.com/patrickmazulo/claude-cost-compare"
+Homepage = "https://github.com/mazulo/claude-cost-compare"
+Repository = "https://github.com/mazulo/claude-cost-compare"
 
 [build-system]
 requires = ["hatchling"]

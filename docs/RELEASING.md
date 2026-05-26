@@ -1,77 +1,73 @@
 # Releasing
 
+Releases are automated. You bump the version locally; GitHub Actions handles PyPI, tags, GitHub Releases, and the Homebrew formula.
+
 ## One-time setup
 
-### 1. GitHub repository
+### GitHub repository
 
-Push this repo to GitHub (if not already):
+Repo: [github.com/mazulo/claude-cost-compare](https://github.com/mazulo/claude-cost-compare) (public).
 
-```bash
-git remote add github git@github.com:mazulo/claude-cost-compare.git
-git push -u github main
-```
+### PyPI trusted publishing
 
-Homebrew requires the repo to be **public**.
-
-### 2. PyPI trusted publishing
-
-1. Create an account on [pypi.org](https://pypi.org) if needed.
-2. Register the project name `claude-cost-compare` on PyPI (can happen on first upload).
-3. Open **Account settings → Publishing → Add a new pending publisher**:
+1. Register [pypi.org](https://pypi.org) account and project `claude-cost-compare`.
+2. **Account settings → Publishing → Add a new pending publisher:**
    - **PyPI project name:** `claude-cost-compare`
    - **Owner:** `patrickmazulo`
    - **Repository name:** `claude-cost-compare`
    - **Workflow name:** `publish.yml`
    - **Environment name:** `pypi`
-4. In GitHub repo **Settings → Environments**, create environment `pypi` (no extra secrets required for OIDC).
+3. In GitHub **Settings → Environments**, create environment `pypi` (OIDC — no secrets needed).
 
-### 3. Homebrew tap
+### Homebrew
 
-The formula lives in `Formula/claude-cost-compare.rb` in this repo. Because the repo is not named `homebrew-claude-cost-compare`, users must tap with an explicit URL:
+Users install from the `Formula/` directory in this repo:
 
 ```bash
 brew tap mazulo/claude-cost-compare https://github.com/mazulo/claude-cost-compare
 brew install claude-cost-compare
+npm install -g ccusage
 ```
 
-Or:
-
-```bash
-brew install https://raw.githubusercontent.com/mazulo/claude-cost-compare/main/Formula/claude-cost-compare.rb
-```
-
-No separate tap repo is required — Homebrew reads the `Formula/` directory from this GitHub repo.
+The publish workflow updates `url` / `sha256` and refreshes pinned Python resources automatically.
 
 ## Release checklist
 
-1. Bump `version` in `pyproject.toml` and `__init__.py`.
-2. Update `Formula/claude-cost-compare.rb`:
-   - `url` / version segment
-   - `sha256` from `shasum -a 256 dist/claude_cost_compare-<version>.tar.gz`
-   - Python resources if dependencies changed (`brew update-python-resources Formula/claude-cost-compare.rb`)
-3. Run tests: `uv sync --dev && uv run pytest && uv run ruff check .`
-4. Build locally: `uv build`
-5. Commit, tag, push:
+1. **Bump version** in both files (must match):
+   - `pyproject.toml` → `[project].version`
+   - `src/claude_cost_compare/__init__.py` → `__version__`
+2. **Commit and push** to `main`:
 
-```bash
-git commit -am "chore: release v0.1.0"
-git tag v0.1.0
-git push origin main --tags
-```
+   ```bash
+   git commit -am "chore: bump version to 0.2.0"
+   git push github main
+   ```
 
-6. GitHub Actions `Publish` workflow uploads to PyPI.
-7. Verify:
+3. **Run the Publish workflow** — GitHub → Actions → **Publish** → **Run workflow**.
+   - Optional `version` input must match `pyproject.toml` if provided.
+   - Workflow will fail if the tag already exists or versions mismatch.
 
-```bash
-pip install claude-cost-compare
-brew tap mazulo/claude-cost-compare https://github.com/mazulo/claude-cost-compare
-brew install claude-cost-compare
-claude-cost-compare --help
-```
+4. **What the workflow does:**
+   - Runs ruff + pytest
+   - Builds and publishes to PyPI (OIDC)
+   - Fetches the published sdist URL + sha256 from PyPI
+   - Updates `Formula/claude-cost-compare.rb`
+   - Commits the formula change, creates tag `vX.Y.Z`, pushes to `main`
+   - Creates a GitHub Release with auto-generated notes
+   - On macOS: runs `brew update-python-resources` and commits if deps changed
 
-## Updating Homebrew resources
+5. **Verify:**
 
-After dependency changes:
+   ```bash
+   pip install claude-cost-compare
+   brew update
+   brew upgrade claude-cost-compare
+   claude-cost-compare --help
+   ```
+
+## Manual formula maintenance
+
+Normally unnecessary. If you need to refresh resources locally:
 
 ```bash
 brew update-python-resources Formula/claude-cost-compare.rb \
@@ -79,4 +75,19 @@ brew update-python-resources Formula/claude-cost-compare.rb \
   --version 0.1.0
 ```
 
-Review the diff, then commit the formula update with the release.
+Update checksum only (without a full release):
+
+```bash
+uv run python scripts/update_formula.py \
+  --url "https://files.pythonhosted.org/packages/.../claude_cost_compare-0.1.0.tar.gz" \
+  --sha256 "<sha256>"
+```
+
+## Demo asset
+
+Regenerate the README terminal screenshot after UI changes:
+
+```bash
+uv run python scripts/export_demo.py
+git add docs/assets/demo.svg
+```
