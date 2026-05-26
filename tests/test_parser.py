@@ -25,6 +25,44 @@ def test_parse_daily_records(records):
     assert "opus" in records[0].mix
 
 
+def test_parse_daily_records_ccusage_v20_period_field():
+    raw = json.loads((Path(__file__).parent / "fixtures" / "sample_daily_v20.json").read_text())
+    records = parse_daily_records(raw)
+    assert len(records) == 2
+    assert records[0].date == date(2026, 5, 6)
+    assert records[1].date == date(2026, 5, 7)
+    assert records[1].mix["haiku"] == pytest.approx(3.0)
+
+
+def test_parse_daily_records_merges_duplicate_period_rows():
+    raw = {
+        "daily": [
+            {
+                "period": "2026-05-08",
+                "totalCost": 10.0,
+                "totalTokens": 100,
+                "modelBreakdowns": [
+                    {"modelName": "claude-opus-4-7", "cost": 10.0},
+                ],
+            },
+            {
+                "period": "2026-05-08",
+                "totalCost": 5.0,
+                "totalTokens": 50,
+                "modelBreakdowns": [
+                    {"modelName": "claude-sonnet-4-6", "cost": 5.0},
+                ],
+            },
+        ]
+    }
+    records = parse_daily_records(raw)
+    assert len(records) == 1
+    assert records[0].cost == pytest.approx(15.0)
+    assert records[0].tokens == 150
+    assert records[0].mix["opus"] == pytest.approx(10.0)
+    assert records[0].mix["sonnet"] == pytest.approx(5.0)
+
+
 def test_window_stats(records):
     stats = window_stats(records[:3])
     assert stats is not None

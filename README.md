@@ -132,7 +132,7 @@ brew install https://raw.githubusercontent.com/mazulo/claude-cost-compare/main/F
 ### Requirements
 
 - Python **3.11+** (pip/uv) or Homebrew
-- [ccusage](https://www.npmjs.com/package/ccusage) on your `PATH`
+- [ccusage](https://www.npmjs.com/package/ccusage) on your `PATH` (v18+; v20 `period` JSON field supported)
 
 ---
 
@@ -179,7 +179,7 @@ flowchart LR
   E --> F
 ```
 
-1. **Fetch** — shells out to `ccusage` for daily usage JSON (NVM-aware discovery).
+1. **Fetch** — shells out to `ccusage daily` for JSON (NVM-aware discovery; supports `date` and v20 `period` rows).
 2. **Parse** — normalizes dates, costs, and per-model breakdowns.
 3. **Analyze** — splits records at `--cutoff`, computes averages and mix shifts.
 4. **Verdict** — flags Opus routing leaks, low Sonnet share, Haiku usage patterns.
