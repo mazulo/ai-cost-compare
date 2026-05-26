@@ -1,0 +1,45 @@
+name: Homebrew resources
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: PyPI package version (e.g. 0.1.1)
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  sync-formula-resources:
+    name: Sync formula Python resources
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: astral-sh/setup-uv@v5
+
+      - name: Sync Homebrew resource blocks
+        run: |
+          for attempt in 1 2 3 4 5 6; do
+            if uv run python scripts/sync_formula_resources.py --version "${{ inputs.version }}"; then
+              exit 0
+            fi
+            echo "Retrying PyPI dependency sync (attempt $attempt)..."
+            sleep 10
+          done
+          exit 1
+
+      - name: Commit resource updates
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Formula/claude-cost-compare.rb
+          if git diff --staged --quiet; then
+            echo "No Homebrew resource changes"
+            exit 0
+          fi
+          git commit -m "chore: refresh Homebrew formula Python resources for v${{ inputs.version }}"
+          git push origin HEAD:main

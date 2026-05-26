@@ -51,10 +51,20 @@ The publish workflow updates `url` / `sha256` and refreshes pinned Python resour
    - Runs ruff + pytest
    - Builds and publishes to PyPI (OIDC)
    - Fetches the published sdist URL + sha256 from PyPI
-   - Updates `Formula/claude-cost-compare.rb`
+   - Updates `Formula/claude-cost-compare.rb` checksum and Python resources
    - Commits the formula change, creates tag `vX.Y.Z`, pushes to `main`
    - Creates a GitHub Release with auto-generated notes
-   - On macOS: runs `brew update-python-resources` and commits if deps changed
+
+   **Note:** Re-running a failed job replays the workflow from the original commit. After workflow fixes, run a new workflow or use **Homebrew resources** (below).
+
+### Homebrew resources only
+
+If you need to refresh formula Python resources without a full release:
+
+1. GitHub → Actions → **Homebrew resources** → Run workflow
+2. Enter the PyPI version (e.g. `0.1.1`)
+
+This uses `scripts/sync_formula_resources.py` (pip + PyPI), not `brew update-python-resources`.
 
 5. **Verify:**
 
@@ -67,12 +77,10 @@ The publish workflow updates `url` / `sha256` and refreshes pinned Python resour
 
 ## Manual formula maintenance
 
-Normally unnecessary. If you need to refresh resources locally:
+Normally unnecessary. Refresh resources locally or via the **Homebrew resources** workflow:
 
 ```bash
-brew update-python-resources Formula/claude-cost-compare.rb \
-  --package-name claude-cost-compare \
-  --version 0.1.0
+uv run python scripts/sync_formula_resources.py --version 0.1.1
 ```
 
 Update checksum only (without a full release):

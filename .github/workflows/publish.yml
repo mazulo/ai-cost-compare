@@ -81,6 +81,18 @@ jobs:
             --url "${{ steps.pypi.outputs.url }}" \
             --sha256 "${{ steps.pypi.outputs.sha256 }}"
 
+      - name: Sync Homebrew Python resources
+        run: |
+          VERSION="${{ steps.meta.outputs.version }}"
+          for attempt in 1 2 3 4 5 6; do
+            if uv run python scripts/sync_formula_resources.py --version "$VERSION"; then
+              exit 0
+            fi
+            echo "Retrying PyPI dependency sync (attempt $attempt)..."
+            sleep 10
+          done
+          exit 1
+
       - name: Commit formula update, tag, and push
         run: |
           git config user.name "github-actions[bot]"
@@ -99,47 +111,3 @@ jobs:
           tag_name: ${{ steps.meta.outputs.tag }}
           name: ${{ steps.meta.outputs.tag }}
           generate_release_notes: true
-
-  update-formula-resources:
-    name: Refresh Homebrew Python resources
-    needs: release
-    runs-on: macos-14
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: main
-          fetch-depth: 0
-
-      - name: Sync latest main
-        run: git pull --ff-only origin main
-
-      - name: Update Python resources from PyPI
-        run: |
-          brew tap mazulo/claude-cost-compare https://github.com/mazulo/claude-cost-compare
-          TAP_FORMULA="$(brew --repository mazulo/claude-cost-compare)/Formula/claude-cost-compare.rb"
-          for attempt in 1 2 3 4 5 6; do
-            if brew update-python-resources mazulo/claude-cost-compare/claude-cost-compare \
-              --package-name claude-cost-compare \
-              --version "${{ needs.release.outputs.version }}"; then
-              cp "$TAP_FORMULA" Formula/claude-cost-compare.rb
-              exit 0
-            fi
-            echo "Retrying Homebrew resource update (attempt $attempt)..."
-            sleep 10
-          done
-          echo "::error::Could not update Homebrew Python resources for ${{ needs.release.outputs.version }}"
-          exit 1
-
-      - name: Commit resource updates
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Formula/claude-cost-compare.rb
-          if git diff --staged --quiet; then
-            echo "No Homebrew resource changes"
-            exit 0
-          fi
-          git commit -m "chore: refresh Homebrew formula Python resources for v${{ needs.release.outputs.version }}"
-          git push origin HEAD:main
