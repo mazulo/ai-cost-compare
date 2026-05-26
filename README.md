@@ -10,16 +10,27 @@ Parses local usage data via [ccusage](https://github.com/ryoppippi/ccusage) and 
 
 ## Prerequisites
 
-- Python 3.11+
+- Python 3.11+ (pip/uv install) or Homebrew
 - [ccusage](https://www.npmjs.com/package/ccusage): `npm install -g ccusage`
 
 ## Install
+
+### PyPI
 
 ```bash
 pip install claude-cost-compare
 # or
 uv tool install claude-cost-compare
 ```
+
+### Homebrew
+
+```bash
+brew install patrickmazulo/claude-cost-compare/claude-cost-compare
+npm install -g ccusage
+```
+
+Homebrew installs the CLI only. `ccusage` remains a separate npm peer dependency.
 
 ## Usage
 
@@ -54,6 +65,10 @@ uv sync --dev
 uv run pytest
 uv run claude-cost-compare --range 5
 ```
+
+## Releasing
+
+See [docs/RELEASING.md](docs/RELEASING.md) for PyPI trusted publishing and Homebrew formula updates.
 
 ## License
 
