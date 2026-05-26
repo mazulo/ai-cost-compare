@@ -1,21 +1,80 @@
+<div align="center">
+
 # claude-cost-compare
 
-Daily Claude cost analysis with before/after comparison and model health signals.
+**Daily Claude spend, before/after windows, and model routing health — in your terminal.**
 
-Parses local usage data via [ccusage](https://github.com/ryoppippi/ccusage) and prints three tables:
+[![PyPI](https://img.shields.io/pypi/v/claude-cost-compare?style=flat-square&logo=pypi&logoColor=white)](https://pypi.org/project/claude-cost-compare/)
+[![Python](https://img.shields.io/pypi/pyversions/claude-cost-compare?style=flat-square&logo=python&logoColor=white)](https://pypi.org/project/claude-cost-compare/)
+[![CI](https://img.shields.io/github/actions/workflow/status/mazulo/claude-cost-compare/ci.yml?branch=main&style=flat-square&logo=github)](https://github.com/mazulo/claude-cost-compare/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
 
-1. **Daily cost** — date, era, cost, tokens, model mix (Opus / Sonnet / Haiku)
-2. **Before vs After** — window comparison split at a cutoff date
-3. **Real Signal** — per-model health verdicts vs your baseline
+Turn local [ccusage](https://github.com/ryoppippi/ccusage) data into three Rich tables: daily cost, split-window comparison, and per-model verdicts.
 
-## Prerequisites
+[Quick start](#-quick-start) · [Demo](#-demo) · [Install](#-install) · [Usage](#-usage) · [How it works](#-how-it-works)
 
-- Python 3.11+ (pip/uv install) or Homebrew
-- [ccusage](https://www.npmjs.com/package/ccusage): `npm install -g ccusage`
+</div>
 
-## Install
+---
 
-### PyPI
+## ✨ Why this exists
+
+Claude Code usage can spike fast — especially when Opus routing leaks or Sonnet/Haiku tiers stop doing their job. This CLI answers three questions at a glance:
+
+| Question | Table |
+|----------|-------|
+| What did I spend each day? | **Daily cost** — cost, tokens, model mix |
+| Did things change after a date? | **Before vs After** — avg/day, totals, mix shift |
+| Are models routed correctly? | **Real Signal** — Opus / Sonnet / Haiku verdicts |
+
+No cloud upload. Reads your local ccusage JSON and prints a terminal report.
+
+---
+
+## 🖥 Demo
+
+<p align="center">
+  <img src="docs/assets/demo.svg" alt="claude-cost-compare terminal output showing daily cost, before/after comparison, and model health verdicts" width="920" />
+</p>
+
+<p align="center">
+  <sub>Sample fixture output · <code>--range 7 --cutoff 2026-05-08</code></sub>
+</p>
+
+<details>
+<summary><strong>Same output as plain text</strong></summary>
+
+```bash
+claude-cost-compare --range 7 --cutoff 2026-05-08
+```
+
+```
+CLAUDE DAILY COST  ·  2026-05-06 → 2026-05-26
+┌─────────────┬────────┬───────────┬────────┬───────────┬──────┬────────┬──────┐
+│ Date        │ Era    │      Cost │ Tokens │ Mix       │ Opus │ Sonnet │ Haiku│
+├─────────────┼────────┼───────────┼────────┼───────────┼──────┼────────┼──────┤
+│ 2026-05-06  │ Before │     $2.68 │   3.2M │ ████████… │ 100% │     0% │   0% │
+│ 2026-05-08  │ Today  │    $80.88 │ 117.9M │ ████████… │  97% │     0% │   3% │
+│ 2026-05-09  │ After  │     $9.92 │  12.1M │ ████████… │  45% │    55% │   0% │
+└─────────────┴────────┴───────────┴────────┴───────────┴──────┴────────┴──────┘
+
+BEFORE vs AFTER  ·  Split at 2026-05-08
+REAL SIGNAL      ·  Post-2026-05-08 · per-model routing verdicts
+```
+
+</details>
+
+---
+
+## 🚀 Quick start
+
+**1. Install ccusage** (peer dependency — reads your local usage data):
+
+```bash
+npm install -g ccusage
+```
+
+**2. Install the CLI:**
 
 ```bash
 pip install claude-cost-compare
@@ -23,26 +82,46 @@ pip install claude-cost-compare
 uv tool install claude-cost-compare
 ```
 
-### Homebrew
+**3. Run:**
 
-The formula lives in this repo’s `Formula/` directory. Tap with an explicit URL (Homebrew otherwise looks for a separate `homebrew-claude-cost-compare` repo):
+```bash
+claude-cost-compare --range 5
+```
+
+---
+
+## 📦 Install
+
+### PyPI / uv
+
+```bash
+pip install claude-cost-compare
+uv tool install claude-cost-compare
+uvx claude-cost-compare --help          # run without installing
+```
+
+### Homebrew
 
 ```bash
 brew tap mazulo/claude-cost-compare https://github.com/mazulo/claude-cost-compare
 brew install claude-cost-compare
-npm install -g ccusage
+npm install -g ccusage                  # still required
 ```
 
-Or install the formula directly:
+One-liner (no tap):
 
 ```bash
 brew install https://raw.githubusercontent.com/mazulo/claude-cost-compare/main/Formula/claude-cost-compare.rb
-npm install -g ccusage
 ```
 
-Requires a **public** GitHub repo. Homebrew installs the CLI only; `ccusage` remains a separate npm peer dependency.
+### Requirements
 
-## Usage
+- Python **3.11+** (pip/uv) or Homebrew
+- [ccusage](https://www.npmjs.com/package/ccusage) on your `PATH`
+
+---
+
+## 📖 Usage
 
 ```bash
 # Last 5 days vs today (default)
@@ -51,35 +130,89 @@ claude-cost-compare --range 5
 # 7-day window split at a specific date
 claude-cost-compare --range 7 --cutoff 2026-05-13
 
-# Full billing period, split at May 13
+# Full billing period from a start date
 claude-cost-compare --since 2026-05-01 --cutoff 2026-05-13
 
-# Daily summary only — no comparisons
+# Daily summary only — skip comparison tables
 claude-cost-compare --summary --since 2026-05-01
+
+# Plain output (also respects NO_COLOR)
+claude-cost-compare --plain --range 5
 ```
 
-### Options
+### Flags
 
-| Flag | Description |
-|------|-------------|
-| `--range`, `-r` | Days before cutoff for "before" window (default: 5) |
-| `--cutoff`, `-c` | Before/after split date `YYYY-MM-DD` (default: today) |
-| `--since`, `-s` | Explicit start date — overrides `--range` |
-| `--summary` | Daily cost table only |
-| `--plain` | Disable color (also respects `NO_COLOR`) |
+| Flag | Short | Description |
+|------|-------|-------------|
+| `--range` | `-r` | Days before cutoff for the "before" window (default: `5`) |
+| `--cutoff` | `-c` | Before/after split date `YYYY-MM-DD` (default: today) |
+| `--since` | `-s` | Explicit start date — overrides `--range` |
+| `--summary` | | Daily cost table only |
+| `--plain` | | Disable color |
 
-## Development
+---
+
+## 🧠 How it works
+
+```mermaid
+flowchart LR
+  A[ccusage JSON] --> B[Parser]
+  B --> C[Window stats]
+  C --> D[Before / After deltas]
+  C --> E[Model verdicts]
+  D --> F[Rich terminal report]
+  E --> F
+```
+
+1. **Fetch** — shells out to `ccusage` for daily usage JSON (NVM-aware discovery).
+2. **Parse** — normalizes dates, costs, and per-model breakdowns.
+3. **Analyze** — splits records at `--cutoff`, computes averages and mix shifts.
+4. **Verdict** — flags Opus routing leaks, low Sonnet share, Haiku usage patterns.
+5. **Render** — Rich tables with era labels, mix bars, and color-coded costs.
+
+---
+
+## 🛠 Development
 
 ```bash
+git clone https://github.com/mazulo/claude-cost-compare.git
+cd claude-cost-compare
 uv sync --dev
 uv run pytest
 uv run claude-cost-compare --range 5
 ```
 
-## Releasing
+Regenerate the README demo SVG after UI changes:
 
-See [docs/RELEASING.md](docs/RELEASING.md) for PyPI trusted publishing and Homebrew formula updates.
+```bash
+uv run python scripts/export_demo.py
+```
 
-## License
+---
 
-MIT
+## 🚢 Releasing
+
+Bump `version` in `pyproject.toml` and `src/claude_cost_compare/__init__.py`, push to `main`, then run the **Publish** workflow from GitHub Actions. It will:
+
+1. Run tests and publish to PyPI
+2. Update the Homebrew formula checksum
+3. Create a git tag and GitHub Release
+4. Refresh Homebrew Python resources on macOS
+
+Details: [docs/RELEASING.md](docs/RELEASING.md)
+
+---
+
+## 📄 License
+
+MIT — see [LICENSE](LICENSE).
+
+---
+
+<div align="center">
+
+Built for Claude Code power users who want spend visibility without leaving the terminal.
+
+**[⭐ Star on GitHub](https://github.com/mazulo/claude-cost-compare)** if this saves you from an Opus routing surprise.
+
+</div>
