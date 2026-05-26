@@ -117,9 +117,20 @@ jobs:
 
       - name: Update Python resources from PyPI
         run: |
-          brew update-python-resources Formula/claude-cost-compare.rb \
-            --package-name claude-cost-compare \
-            --version "${{ needs.release.outputs.version }}"
+          brew tap mazulo/claude-cost-compare https://github.com/mazulo/claude-cost-compare
+          TAP_FORMULA="$(brew --repository mazulo/claude-cost-compare)/Formula/claude-cost-compare.rb"
+          for attempt in 1 2 3 4 5 6; do
+            if brew update-python-resources mazulo/claude-cost-compare/claude-cost-compare \
+              --package-name claude-cost-compare \
+              --version "${{ needs.release.outputs.version }}"; then
+              cp "$TAP_FORMULA" Formula/claude-cost-compare.rb
+              exit 0
+            fi
+            echo "Retrying Homebrew resource update (attempt $attempt)..."
+            sleep 10
+          done
+          echo "::error::Could not update Homebrew Python resources for ${{ needs.release.outputs.version }}"
+          exit 1
 
       - name: Commit resource updates
         run: |
