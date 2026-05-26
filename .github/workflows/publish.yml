@@ -83,9 +83,10 @@ jobs:
 
       - name: Sync Homebrew Python resources
         run: |
+          python3 -m pip install --upgrade pip
           VERSION="${{ steps.meta.outputs.version }}"
           for attempt in 1 2 3 4 5 6; do
-            if uv run python scripts/sync_formula_resources.py --version "$VERSION"; then
+            if python3 scripts/sync_formula_resources.py --version "$VERSION"; then
               exit 0
             fi
             echo "Retrying PyPI dependency sync (attempt $attempt)..."

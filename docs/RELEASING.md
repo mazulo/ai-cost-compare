@@ -80,7 +80,7 @@ This uses `scripts/sync_formula_resources.py` (pip + PyPI), not `brew update-pyt
 Normally unnecessary. Refresh resources locally or via the **Homebrew resources** workflow:
 
 ```bash
-uv run python scripts/sync_formula_resources.py --version 0.1.1
+python3 scripts/sync_formula_resources.py --version 0.1.1
 ```
 
 Update checksum only (without a full release):

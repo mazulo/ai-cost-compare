@@ -5,7 +5,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -40,11 +42,40 @@ def pip_resource_name(filename: str) -> tuple[str, str]:
     return pypi_name, version
 
 
+def python_with_pip() -> str:
+    """Return a Python interpreter that can run `python -m pip`.
+
+    uv project venvs often omit pip; GitHub Actions runners provide system python3.
+    """
+    candidates: list[str | None] = [
+        os.environ.get("SYNC_FORMULA_PYTHON"),
+        shutil.which("python3"),
+        "/usr/bin/python3",
+    ]
+    if Path(sys.executable).name != "python":
+        candidates.append(sys.executable)
+
+    seen: set[str] = set()
+    for candidate in candidates:
+        if not candidate or candidate in seen:
+            continue
+        seen.add(candidate)
+        proc = subprocess.run(
+            [candidate, "-m", "pip", "--version"],
+            capture_output=True,
+            text=True,
+        )
+        if proc.returncode == 0:
+            return candidate
+    raise RuntimeError("No Python interpreter with pip found")
+
+
 def collect_dependencies(*, package: str, version: str) -> dict[str, tuple[str, str]]:
+    pip_python = python_with_pip()
     with tempfile.TemporaryDirectory() as tmp:
-        subprocess.run(
+        proc = subprocess.run(
             [
-                sys.executable,
+                pip_python,
                 "-m",
                 "pip",
                 "download",
@@ -54,10 +85,12 @@ def collect_dependencies(*, package: str, version: str) -> dict[str, tuple[str, 
                 "--no-binary",
                 ":all:",
             ],
-            check=True,
             capture_output=True,
             text=True,
         )
+        if proc.returncode != 0:
+            message = proc.stderr.strip() or proc.stdout.strip() or "unknown pip error"
+            raise RuntimeError(f"pip download failed using {pip_python}: {message}")
         resources: dict[str, tuple[str, str]] = {}
         for path in sorted(Path(tmp).glob("*.tar.gz")):
             pypi_name, dep_version = pip_resource_name(path.name)
