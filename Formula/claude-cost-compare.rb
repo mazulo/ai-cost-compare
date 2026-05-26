@@ -3,8 +3,8 @@ class ClaudeCostCompare < Formula
 
   desc "Daily Claude cost analysis with before/after comparison"
   homepage "https://github.com/mazulo/claude-cost-compare"
-  url "https://files.pythonhosted.org/packages/e6/bf/d9fc2e37c7455da8f0ff8ee03bce731ea51c7c28e95d060b2a21b16bd70b/claude_cost_compare-0.1.0.tar.gz"
-  sha256 "2852655f04af0dc2f384e864dd08c0cfacaedf3548f51cda822be093f7c4f1cc"
+  url "https://files.pythonhosted.org/packages/9c/80/b620198d9a33306af7909f917c2d2d1c9fce38b009c9cb55fe4b650c97a4/claude_cost_compare-0.1.1.tar.gz"
+  sha256 "aa3dee8eeb3df63a38342e83f5b486832a263c118428d5db6baa2757aaa966de"
   license "MIT"
 
   depends_on "node"
