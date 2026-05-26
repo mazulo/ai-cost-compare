@@ -11,7 +11,9 @@
 
 Turn local [ccusage](https://github.com/ryoppippi/ccusage) data into three Rich tables: daily cost, split-window comparison, and per-model verdicts.
 
-[Quick start](#-quick-start) · [Demo](#-demo) · [Install](#-install) · [Usage](#-usage) · [How it works](#-how-it-works)
+**Not a ccusage fork** — an interpretation layer on top. ccusage reports what you spent; this CLI adds before/after windows, mix shifts, and routing health verdicts.
+
+[Quick start](#-quick-start) · [Demo](#-demo) · [ccusage vs this tool](#-ccusage-vs-this-tool) · [Install](#-install) · [Usage](#-usage) · [How it works](#-how-it-works)
 
 </div>
 
@@ -28,6 +30,19 @@ Claude Code usage can spike fast — especially when Opus routing leaks or Sonne
 | Are models routed correctly? | **Real Signal** — Opus / Sonnet / Haiku verdicts |
 
 No cloud upload. Reads your local ccusage JSON and prints a terminal report.
+
+---
+
+## 🔀 ccusage vs this tool
+
+| | [ccusage](https://github.com/ryoppippi/ccusage) | **claude-cost-compare** |
+|---|-----|-----|
+| **Role** | Usage analytics — read local logs, report spend | Interpretation layer — explain *what changed* and *if routing looks healthy* |
+| **Scope** | Many agents, daily/weekly/monthly/session views | Claude Code focus: before/after split + model mix verdicts |
+| **Output** | Descriptive tables & totals | Daily cost + **Before vs After** + **Real Signal** (Opus/Sonnet/Haiku) |
+| **Install both?** | ✅ Required (data source) | ✅ Optional companion on top |
+
+Use ccusage for *“what did I spend?”* Use this when *“did something break after I changed config on Tuesday?”*
 
 ---
 
