@@ -3,6 +3,9 @@
 .vscode/
 .zed/
 
+# Local planning docs (not published)
+plans/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
