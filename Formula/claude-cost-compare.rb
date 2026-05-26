@@ -3,8 +3,8 @@ class ClaudeCostCompare < Formula
 
   desc "Daily Claude cost analysis with before/after comparison"
   homepage "https://github.com/mazulo/claude-cost-compare"
-  url "https://files.pythonhosted.org/packages/9c/80/b620198d9a33306af7909f917c2d2d1c9fce38b009c9cb55fe4b650c97a4/claude_cost_compare-0.1.1.tar.gz"
-  sha256 "aa3dee8eeb3df63a38342e83f5b486832a263c118428d5db6baa2757aaa966de"
+  url "https://files.pythonhosted.org/packages/9d/6f/ec678f2bb526bc4140f608c2083d7a1cd72f527d5580280f7b9fc681f5f4/claude_cost_compare-0.1.2.tar.gz"
+  sha256 "06d0188aff537703c6182dc727ddee25cfe8b02299d44a9a04eb04a1cef27e43"
   license "MIT"
 
   depends_on "node"
@@ -49,7 +49,6 @@ class ClaudeCostCompare < Formula
     url "https://files.pythonhosted.org/packages/57/56/3191bae66b08ccc637ea8120426068bcb361cc323c96404c310886937067/rich_rst-2.0.1.tar.gz"
     sha256 "cbe236ed0901d1ec8427cc6a50bf0a34353ba28ad014dc24def68bfe7f3b9e68"
   end
-
   def install
     virtualenv_install_with_resources
   end
