@@ -2,9 +2,9 @@ class ClaudeCostCompare < Formula
   include Language::Python::Virtualenv
 
   desc "Daily Claude cost analysis with before/after comparison"
-  homepage "https://github.com/patrickmazulo/claude-cost-compare"
-  url "https://files.pythonhosted.org/packages/source/c/claude-cost-compare/claude_cost_compare-0.1.0.tar.gz"
-  sha256 "9435ea18231424aeba6c97da223fd8fb84b0c4d4eadc325ab2420e71cfbf1c6f"
+  homepage "https://github.com/mazulo/claude-cost-compare"
+  url "https://files.pythonhosted.org/packages/e6/bf/d9fc2e37c7455da8f0ff8ee03bce731ea51c7c28e95d060b2a21b16bd70b/claude_cost_compare-0.1.0.tar.gz"
+  sha256 "2852655f04af0dc2f384e864dd08c0cfacaedf3548f51cda822be093f7c4f1cc"
   license "MIT"
 
   depends_on "node"

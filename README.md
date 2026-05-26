@@ -25,12 +25,22 @@ uv tool install claude-cost-compare
 
 ### Homebrew
 
+The formula lives in this repo’s `Formula/` directory. Tap with an explicit URL (Homebrew otherwise looks for a separate `homebrew-claude-cost-compare` repo):
+
 ```bash
-brew install patrickmazulo/claude-cost-compare/claude-cost-compare
+brew tap mazulo/claude-cost-compare https://github.com/mazulo/claude-cost-compare
+brew install claude-cost-compare
 npm install -g ccusage
 ```
 
-Homebrew installs the CLI only. `ccusage` remains a separate npm peer dependency.
+Or install the formula directly:
+
+```bash
+brew install https://raw.githubusercontent.com/mazulo/claude-cost-compare/main/Formula/claude-cost-compare.rb
+npm install -g ccusage
+```
+
+Requires a **public** GitHub repo. Homebrew installs the CLI only; `ccusage` remains a separate npm peer dependency.
 
 ## Usage
 

@@ -7,9 +7,11 @@
 Push this repo to GitHub (if not already):
 
 ```bash
-git remote add origin git@github.com:patrickmazulo/claude-cost-compare.git
-git push -u origin main
+git remote add github git@github.com:mazulo/claude-cost-compare.git
+git push -u github main
 ```
+
+Homebrew requires the repo to be **public**.
 
 ### 2. PyPI trusted publishing
 
@@ -25,13 +27,20 @@ git push -u origin main
 
 ### 3. Homebrew tap
 
-The formula lives in `Formula/claude-cost-compare.rb` in this repo. Users install with:
+The formula lives in `Formula/claude-cost-compare.rb` in this repo. Because the repo is not named `homebrew-claude-cost-compare`, users must tap with an explicit URL:
 
 ```bash
-brew install patrickmazulo/claude-cost-compare/claude-cost-compare
+brew tap mazulo/claude-cost-compare https://github.com/mazulo/claude-cost-compare
+brew install claude-cost-compare
 ```
 
-No separate tap repo required — Homebrew reads the `Formula/` directory from the GitHub repo.
+Or:
+
+```bash
+brew install https://raw.githubusercontent.com/mazulo/claude-cost-compare/main/Formula/claude-cost-compare.rb
+```
+
+No separate tap repo is required — Homebrew reads the `Formula/` directory from this GitHub repo.
 
 ## Release checklist
 
@@ -55,8 +64,8 @@ git push origin main --tags
 
 ```bash
 pip install claude-cost-compare
-brew update
-brew install patrickmazulo/claude-cost-compare/claude-cost-compare
+brew tap mazulo/claude-cost-compare https://github.com/mazulo/claude-cost-compare
+brew install claude-cost-compare
 claude-cost-compare --help
 ```
 
