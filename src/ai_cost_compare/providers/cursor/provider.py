@@ -1,5 +1,6 @@
 from typing import Any
 
+from ai_cost_compare.config_store import load_cursor_token
 from ai_cost_compare.core.errors import CursorDataError
 from ai_cost_compare.providers.base import (
     FetchContext,
@@ -7,8 +8,7 @@ from ai_cost_compare.providers.base import (
     UsageProvider,
     VerdictProfile,
 )
-from ai_cost_compare.providers.cursor import parse
-from ai_cost_compare.providers.cursor import verdicts
+from ai_cost_compare.providers.cursor import fetch_api, parse, verdicts
 from ai_cost_compare.providers.cursor.taxonomy import CURSOR_TAXONOMY
 
 
@@ -17,12 +17,17 @@ class CursorProvider:
     display_name = "Cursor"
 
     def fetch(self, ctx: FetchContext) -> str:
-        if ctx.file is None:
-            raise CursorDataError(
-                "Cursor usage requires --file PATH with a CSV from "
-                "https://cursor.com/dashboard/usage"
-            )
-        return ctx.file.read_text(encoding="utf-8")
+        if ctx.file is not None:
+            return ctx.file.read_text(encoding="utf-8")
+        token = ctx.cursor_token or load_cursor_token()
+        if token:
+            return fetch_api.fetch_usage_csv(token)
+        raise CursorDataError(
+            "Cursor usage requires --file PATH or a session token.\n"
+            "  CSV: export from https://cursor.com/dashboard/usage\n"
+            "  API: pip install 'ai-cost-compare[cursor-api]' and set "
+            "[cursor] session_token in ~/.config/ai-cost-compare/config.toml"
+        )
 
     def parse(self, raw: Any) -> list:
         return parse.parse_usage_csv(raw)

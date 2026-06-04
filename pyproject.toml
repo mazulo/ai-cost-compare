@@ -1,12 +1,12 @@
 [project]
 name = "ai-cost-compare"
 version = "0.2.0"
-description = "Daily Claude cost analysis with before/after comparison and model health signals"
+description = "Daily AI usage cost analysis with before/after comparison and model health signals"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.11"
 authors = [{ name = "Patrick Mazulo", email = "pmazulo@gmail.com" }]
-keywords = ["claude", "cost", "ccusage", "cli"]
+keywords = ["ai", "claude", "cursor", "cost", "ccusage", "cli"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: Console",
@@ -21,6 +21,9 @@ classifiers = [
 dependencies = [
     "cyclopts>=4.0",
 ]
+
+[project.optional-dependencies]
+cursor-api = ["httpx>=0.27"]
 
 [project.scripts]
 ai-cost-compare = "ai_cost_compare.cli:run"
@@ -46,6 +49,7 @@ packages = ["src/ai_cost_compare"]
 dev = [
     "pytest>=8.0",
     "ruff>=0.9",
+    "httpx>=0.27",
 ]
 
 [tool.pytest.ini_options]
