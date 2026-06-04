@@ -2,14 +2,14 @@
 
 # ai-cost-compare
 
-**Daily Claude spend, before/after windows, and model routing health — in your terminal.**
+**Daily AI spend (Claude Code, Cursor), before/after windows, and model routing health — in your terminal.**
 
 [![PyPI](https://img.shields.io/pypi/v/ai-cost-compare?style=flat-square&logo=pypi&logoColor=white)](https://pypi.org/project/ai-cost-compare/)
 [![Python](https://img.shields.io/pypi/pyversions/ai-cost-compare?style=flat-square&logo=python&logoColor=white)](https://pypi.org/project/ai-cost-compare/)
 [![CI](https://img.shields.io/github/actions/workflow/status/mazulo/ai-cost-compare/ci.yml?branch=main&style=flat-square&logo=github)](https://github.com/mazulo/ai-cost-compare/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
 
-Turn local [ccusage](https://github.com/ryoppippi/ccusage) data into three Rich tables: daily cost, split-window comparison, and per-model verdicts.
+Turn local usage data into three Rich tables: daily cost, split-window comparison, and per-model verdicts. **Claude** via [ccusage](https://github.com/ryoppippi/ccusage); **Cursor** via dashboard CSV (or optional API token).
 
 **Not a ccusage fork** — an interpretation layer on top. ccusage reports what you spent; this CLI adds before/after windows, mix shifts, and routing health verdicts.
 
@@ -138,24 +138,42 @@ brew install https://raw.githubusercontent.com/mazulo/ai-cost-compare/main/Formu
 
 ## 📖 Usage
 
+### Claude Code (default)
+
+`ai-cost-compare` and `ai-cost-compare claude` are equivalent. Legacy installs: `claude-cost-compare` / `cccompare` still work.
+
 ```bash
 # Last 5 days vs today (default)
 ai-cost-compare --range 5
 
 # 7-day window split at a specific date
-ai-cost-compare --range 7 --cutoff 2026-05-13
-
-# Full billing period from a start date
-ai-cost-compare --since 2026-05-01 --cutoff 2026-05-13
+ai-cost-compare claude --range 7 --cutoff 2026-05-13
 
 # Daily summary only — skip comparison tables
 ai-cost-compare --summary --since 2026-05-01
-
-# Plain output (also respects NO_COLOR)
-ai-cost-compare --plain --range 5
 ```
 
-### Flags
+Requires [ccusage](https://www.npmjs.com/package/ccusage) on your `PATH`.
+
+### Cursor IDE
+
+Export usage CSV from [cursor.com/dashboard/usage](https://cursor.com/dashboard/usage), then:
+
+```bash
+ai-cost-compare cursor --file ~/Downloads/usage.csv --range 7 --cutoff 2026-05-13
+```
+
+Optional API fetch (unofficial dashboard endpoint):
+
+```bash
+pip install 'ai-cost-compare[cursor-api]'
+# ~/.config/ai-cost-compare/config.toml
+# [cursor]
+# session_token = "..."
+ai-cost-compare cursor --range 5
+```
+
+### Shared flags
 
 | Flag | Short | Description |
 |------|-------|-------------|
@@ -164,6 +182,8 @@ ai-cost-compare --plain --range 5
 | `--since` | `-s` | Explicit start date — overrides `--range` |
 | `--summary` | | Daily cost table only |
 | `--plain` | | Disable color |
+| `--file` | `-f` | Cursor only: path to exported CSV |
+| `--cursor-token` | | Cursor only: session token (overrides config) |
 
 ---
 
@@ -171,7 +191,7 @@ ai-cost-compare --plain --range 5
 
 ```mermaid
 flowchart LR
-  A[ccusage JSON] --> B[Parser]
+  P[Provider] --> B[Parser]
   B --> C[Window stats]
   C --> D[Before / After deltas]
   C --> E[Model verdicts]
@@ -179,10 +199,10 @@ flowchart LR
   E --> F
 ```
 
-1. **Fetch** — shells out to `ccusage daily` for JSON (NVM-aware discovery; supports `date` and v20 `period` rows).
-2. **Parse** — normalizes dates, costs, and per-model breakdowns.
+1. **Provider** — `claude` (ccusage JSON) or `cursor` (CSV / optional API).
+2. **Parse** — normalizes dates, costs, and per-model buckets (provider taxonomy).
 3. **Analyze** — splits records at `--cutoff`, computes averages and mix shifts.
-4. **Verdict** — flags Opus routing leaks, low Sonnet share, Haiku usage patterns.
+4. **Verdict** — provider-specific routing health rules.
 5. **Render** — Rich tables with era labels, mix bars, and color-coded costs.
 
 ---
@@ -226,7 +246,7 @@ MIT — see [LICENSE](LICENSE).
 
 <div align="center">
 
-Built for Claude Code power users who want spend visibility without leaving the terminal.
+Built for developers who want spend visibility across Claude Code and Cursor without leaving the terminal.
 
 **[⭐ Star on GitHub](https://github.com/mazulo/ai-cost-compare)** if this saves you from an Opus routing surprise.
 
