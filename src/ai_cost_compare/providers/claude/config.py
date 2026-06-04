@@ -1,4 +1,4 @@
-"""Thresholds and model family mapping."""
+"""Claude-specific thresholds and model family mapping."""
 
 COST_WARN = 20.0
 COST_ALERT = 50.0

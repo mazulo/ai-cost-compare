@@ -4,10 +4,10 @@ from rich.console import Console
 from rich.table import Table
 from rich.text import Text
 
-from ai_cost_compare.analysis.deltas import compare_windows
-from ai_cost_compare.analysis.verdicts import verdict_haiku, verdict_opus, verdict_sonnet
-from ai_cost_compare.analysis.windows import window_stats
-from ai_cost_compare.data.models import DailyRecord, WindowStats
+from ai_cost_compare.core.deltas import compare_windows
+from ai_cost_compare.core.models import DailyRecord, WindowStats
+from ai_cost_compare.core.windows import window_stats
+from ai_cost_compare.providers.claude.verdicts import verdict_haiku, verdict_opus, verdict_sonnet
 from ai_cost_compare.render.components import (
     base_table,
     era_cell,

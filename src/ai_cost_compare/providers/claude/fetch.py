@@ -4,7 +4,7 @@ import subprocess
 from datetime import date
 from pathlib import Path
 
-from ai_cost_compare.errors import CcusageNotFoundError
+from ai_cost_compare.core.errors import CcusageNotFoundError
 
 
 def _nvm_ccusage_paths() -> list[Path]:

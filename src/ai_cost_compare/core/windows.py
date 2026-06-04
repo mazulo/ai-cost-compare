@@ -1,7 +1,7 @@
 from collections import defaultdict
 from datetime import date, timedelta
 
-from ai_cost_compare.data.models import DailyRecord, WindowStats
+from ai_cost_compare.core.models import DailyRecord, WindowStats
 
 
 def compute_since(

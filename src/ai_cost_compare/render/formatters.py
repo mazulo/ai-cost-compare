@@ -1,6 +1,6 @@
 from rich.text import Text
 
-from ai_cost_compare import config
+from ai_cost_compare.providers.claude import config
 from ai_cost_compare.render.theme import (
     BAR_EMPTY,
     ERA_AFTER,

@@ -13,8 +13,8 @@ from pathlib import Path
 
 from rich.console import Console
 
-from ai_cost_compare.analysis.windows import split_records, window_stats
-from ai_cost_compare.data.parser import parse_daily_records
+from ai_cost_compare.core.windows import split_records, window_stats
+from ai_cost_compare.providers.claude.parse import parse_daily_records
 from ai_cost_compare.render.report import (
     COST_COL,
     DATE_COL,

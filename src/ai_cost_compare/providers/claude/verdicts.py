@@ -1,4 +1,4 @@
-from ai_cost_compare import config
+from ai_cost_compare.providers.claude import config
 
 
 def _delta_suffix(was_p: int | None, now_p: int) -> str:
