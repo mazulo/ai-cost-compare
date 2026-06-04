@@ -1,6 +1,6 @@
 [project]
 name = "claude-cost-compare"
-version = "0.1.3"
+version = "0.1.4"
 description = "Daily Claude cost analysis with before/after comparison and model health signals"
 readme = "README.md"
 license = { text = "MIT" }
@@ -24,6 +24,7 @@ dependencies = [
 
 [project.scripts]
 claude-cost-compare = "claude_cost_compare.cli:run"
+cccompare = "claude_cost_compare.cli:run"
 
 [project.urls]
 Homepage = "https://github.com/mazulo/claude-cost-compare"
