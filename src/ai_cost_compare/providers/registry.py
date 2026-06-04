@@ -1,8 +1,10 @@
 from ai_cost_compare.providers.base import UsageProvider
 from ai_cost_compare.providers.claude import provider as claude_provider
+from ai_cost_compare.providers.cursor import provider as cursor_provider
 
 _REGISTRY: dict[str, UsageProvider] = {
     claude_provider.id: claude_provider,
+    cursor_provider.id: cursor_provider,
 }
 
 

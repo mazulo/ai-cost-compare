@@ -17,5 +17,9 @@ class CcusageNotFoundError(CliError):
     exit_code = 1
 
 
+class CursorDataError(CliError):
+    exit_code = 1
+
+
 class NoDataError(CliError):
     exit_code = 3

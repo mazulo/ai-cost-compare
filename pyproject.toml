@@ -25,8 +25,8 @@ dependencies = [
 [project.scripts]
 ai-cost-compare = "ai_cost_compare.cli:run"
 aicost = "ai_cost_compare.cli:run"
-claude-cost-compare = "ai_cost_compare.cli:run"
-cccompare = "ai_cost_compare.cli:run"
+claude-cost-compare = "ai_cost_compare.cli:run_claude_legacy"
+cccompare = "ai_cost_compare.cli:run_claude_legacy"
 
 [project.urls]
 Homepage = "https://github.com/mazulo/ai-cost-compare"
