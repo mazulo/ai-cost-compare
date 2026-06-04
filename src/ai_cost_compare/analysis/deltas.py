@@ -1,4 +1,4 @@
-from claude_cost_compare.data.models import ComparisonResult, WindowStats
+from ai_cost_compare.data.models import ComparisonResult, WindowStats
 
 
 def pct(value: float, total: float) -> int:

@@ -13,9 +13,9 @@ from pathlib import Path
 
 from rich.console import Console
 
-from claude_cost_compare.analysis.windows import split_records, window_stats
-from claude_cost_compare.data.parser import parse_daily_records
-from claude_cost_compare.render.report import (
+from ai_cost_compare.analysis.windows import split_records, window_stats
+from ai_cost_compare.data.parser import parse_daily_records
+from ai_cost_compare.render.report import (
     COST_COL,
     DATE_COL,
     DAYS_COL,
@@ -93,7 +93,7 @@ def export_demo(
     )
 
     svg_output.parent.mkdir(parents=True, exist_ok=True)
-    svg = _prepare_svg_for_raster(console.export_svg(title="claude-cost-compare"))
+    svg = _prepare_svg_for_raster(console.export_svg(title="ai-cost-compare"))
     svg_output.write_text(svg, encoding="utf-8")
 
     for png_path in (png_output, social_png_output):

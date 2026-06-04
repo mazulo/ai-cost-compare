@@ -1,7 +1,7 @@
 from rich.text import Text
 
-from claude_cost_compare import config
-from claude_cost_compare.render.theme import (
+from ai_cost_compare import config
+from ai_cost_compare.render.theme import (
     BAR_EMPTY,
     ERA_AFTER,
     ERA_BEFORE,

@@ -4,14 +4,14 @@ from typing import Annotated
 
 from cyclopts import App, Parameter
 
-from claude_cost_compare.analysis.windows import compute_since, split_records, window_stats
-from claude_cost_compare.data.ccusage import fetch_daily
-from claude_cost_compare.data.parser import parse_daily_records
-from claude_cost_compare.errors import CliError
-from claude_cost_compare.render.console import make_console
-from claude_cost_compare.render.report import render_report
+from ai_cost_compare.analysis.windows import compute_since, split_records, window_stats
+from ai_cost_compare.data.ccusage import fetch_daily
+from ai_cost_compare.data.parser import parse_daily_records
+from ai_cost_compare.errors import CliError
+from ai_cost_compare.render.console import make_console
+from ai_cost_compare.render.report import render_report
 
-app = App(name="claude-cost-compare", help_format="markdown")
+app = App(name="ai-cost-compare", help_format="markdown")
 
 
 @app.default

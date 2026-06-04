@@ -6,15 +6,15 @@ Releases are automated. You bump the version locally; GitHub Actions handles PyP
 
 ### GitHub repository
 
-Repo: [github.com/mazulo/claude-cost-compare](https://github.com/mazulo/claude-cost-compare) (public).
+Repo: [github.com/mazulo/ai-cost-compare](https://github.com/mazulo/ai-cost-compare) (public).
 
 ### PyPI trusted publishing
 
-1. Register [pypi.org](https://pypi.org) account and project `claude-cost-compare`.
+1. Register [pypi.org](https://pypi.org) account and project `ai-cost-compare`.
 2. **Account settings → Publishing → Add a new pending publisher:**
-   - **PyPI project name:** `claude-cost-compare`
+   - **PyPI project name:** `ai-cost-compare`
    - **Owner:** `patrickmazulo`
-   - **Repository name:** `claude-cost-compare`
+   - **Repository name:** `ai-cost-compare`
    - **Workflow name:** `publish.yml`
    - **Environment name:** `pypi`
 3. In GitHub **Settings → Environments**, create environment `pypi` (OIDC — no secrets needed).
@@ -24,8 +24,8 @@ Repo: [github.com/mazulo/claude-cost-compare](https://github.com/mazulo/claude-c
 Users install from the `Formula/` directory in this repo:
 
 ```bash
-brew tap mazulo/claude-cost-compare https://github.com/mazulo/claude-cost-compare
-brew install claude-cost-compare
+brew tap mazulo/ai-cost-compare https://github.com/mazulo/ai-cost-compare
+brew install ai-cost-compare
 npm install -g ccusage
 ```
 
@@ -35,7 +35,7 @@ The publish workflow updates `url` / `sha256` and refreshes pinned Python resour
 
 1. **Bump version** in both files (must match):
    - `pyproject.toml` → `[project].version`
-   - `src/claude_cost_compare/__init__.py` → `__version__`
+   - `src/ai_cost_compare/__init__.py` → `__version__`
 2. **Commit and push** to `main`:
 
    ```bash
@@ -51,7 +51,7 @@ The publish workflow updates `url` / `sha256` and refreshes pinned Python resour
    - Runs ruff + pytest
    - Builds and publishes to PyPI (OIDC)
    - Fetches the published sdist URL + sha256 from PyPI
-   - Updates `Formula/claude-cost-compare.rb` checksum and Python resources
+   - Updates `Formula/ai-cost-compare.rb` checksum and Python resources
    - Commits the formula change, creates tag `vX.Y.Z`, pushes to `main`
    - Creates a GitHub Release with auto-generated notes
 
@@ -69,10 +69,10 @@ This uses `scripts/sync_formula_resources.py` (pip + PyPI), not `brew update-pyt
 5. **Verify:**
 
    ```bash
-   pip install claude-cost-compare
+   pip install ai-cost-compare
    brew update
-   brew upgrade claude-cost-compare
-   claude-cost-compare --help
+   brew upgrade ai-cost-compare
+   ai-cost-compare --help
    ```
 
 ## Manual formula maintenance
@@ -87,7 +87,7 @@ Update checksum only (without a full release):
 
 ```bash
 uv run python scripts/update_formula.py \
-  --url "https://files.pythonhosted.org/packages/.../claude_cost_compare-0.1.0.tar.gz" \
+  --url "https://files.pythonhosted.org/packages/.../ai_cost_compare-0.1.0.tar.gz" \
   --sha256 "<sha256>"
 ```
 

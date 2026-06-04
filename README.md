@@ -1,12 +1,12 @@
 <div align="center">
 
-# claude-cost-compare
+# ai-cost-compare
 
 **Daily Claude spend, before/after windows, and model routing health — in your terminal.**
 
-[![PyPI](https://img.shields.io/pypi/v/claude-cost-compare?style=flat-square&logo=pypi&logoColor=white)](https://pypi.org/project/claude-cost-compare/)
-[![Python](https://img.shields.io/pypi/pyversions/claude-cost-compare?style=flat-square&logo=python&logoColor=white)](https://pypi.org/project/claude-cost-compare/)
-[![CI](https://img.shields.io/github/actions/workflow/status/mazulo/claude-cost-compare/ci.yml?branch=main&style=flat-square&logo=github)](https://github.com/mazulo/claude-cost-compare/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/ai-cost-compare?style=flat-square&logo=pypi&logoColor=white)](https://pypi.org/project/ai-cost-compare/)
+[![Python](https://img.shields.io/pypi/pyversions/ai-cost-compare?style=flat-square&logo=python&logoColor=white)](https://pypi.org/project/ai-cost-compare/)
+[![CI](https://img.shields.io/github/actions/workflow/status/mazulo/ai-cost-compare/ci.yml?branch=main&style=flat-square&logo=github)](https://github.com/mazulo/ai-cost-compare/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
 
 Turn local [ccusage](https://github.com/ryoppippi/ccusage) data into three Rich tables: daily cost, split-window comparison, and per-model verdicts.
@@ -35,7 +35,7 @@ No cloud upload. Reads your local ccusage JSON and prints a terminal report.
 
 ## 🔀 ccusage vs this tool
 
-| | [ccusage](https://github.com/ryoppippi/ccusage) | **claude-cost-compare** |
+| | [ccusage](https://github.com/ryoppippi/ccusage) | **ai-cost-compare** |
 |---|-----|-----|
 | **Role** | Usage analytics — read local logs, report spend | Interpretation layer — explain *what changed* and *if routing looks healthy* |
 | **Scope** | Many agents, daily/weekly/monthly/session views | Claude Code focus: before/after split + model mix verdicts |
@@ -49,7 +49,7 @@ Use ccusage for *“what did I spend?”* Use this when *“did something break 
 ## 🖥 Demo
 
 <p align="center">
-  <img src="docs/assets/demo.svg" alt="claude-cost-compare terminal output showing daily cost, before/after comparison, and model health verdicts" width="920" />
+  <img src="docs/assets/demo.svg" alt="ai-cost-compare terminal output showing daily cost, before/after comparison, and model health verdicts" width="920" />
 </p>
 
 <p align="center">
@@ -60,7 +60,7 @@ Use ccusage for *“what did I spend?”* Use this when *“did something break 
 <summary><strong>Same output as plain text</strong></summary>
 
 ```bash
-claude-cost-compare --range 7 --cutoff 2026-05-08
+ai-cost-compare --range 7 --cutoff 2026-05-08
 ```
 
 ```
@@ -92,15 +92,15 @@ npm install -g ccusage
 **2. Install the CLI:**
 
 ```bash
-pip install claude-cost-compare
+pip install ai-cost-compare
 # or
-uv tool install claude-cost-compare
+uv tool install ai-cost-compare
 ```
 
 **3. Run:**
 
 ```bash
-claude-cost-compare --range 5
+ai-cost-compare --range 5
 ```
 
 ---
@@ -110,23 +110,23 @@ claude-cost-compare --range 5
 ### PyPI / uv
 
 ```bash
-pip install claude-cost-compare
-uv tool install claude-cost-compare
-uvx claude-cost-compare --help          # run without installing
+pip install ai-cost-compare
+uv tool install ai-cost-compare
+uvx ai-cost-compare --help          # run without installing
 ```
 
 ### Homebrew
 
 ```bash
-brew tap mazulo/claude-cost-compare https://github.com/mazulo/claude-cost-compare
-brew install claude-cost-compare
+brew tap mazulo/ai-cost-compare https://github.com/mazulo/ai-cost-compare
+brew install ai-cost-compare
 npm install -g ccusage                  # still required
 ```
 
 One-liner (no tap):
 
 ```bash
-brew install https://raw.githubusercontent.com/mazulo/claude-cost-compare/main/Formula/claude-cost-compare.rb
+brew install https://raw.githubusercontent.com/mazulo/ai-cost-compare/main/Formula/ai-cost-compare.rb
 ```
 
 ### Requirements
@@ -140,19 +140,19 @@ brew install https://raw.githubusercontent.com/mazulo/claude-cost-compare/main/F
 
 ```bash
 # Last 5 days vs today (default)
-claude-cost-compare --range 5
+ai-cost-compare --range 5
 
 # 7-day window split at a specific date
-claude-cost-compare --range 7 --cutoff 2026-05-13
+ai-cost-compare --range 7 --cutoff 2026-05-13
 
 # Full billing period from a start date
-claude-cost-compare --since 2026-05-01 --cutoff 2026-05-13
+ai-cost-compare --since 2026-05-01 --cutoff 2026-05-13
 
 # Daily summary only — skip comparison tables
-claude-cost-compare --summary --since 2026-05-01
+ai-cost-compare --summary --since 2026-05-01
 
 # Plain output (also respects NO_COLOR)
-claude-cost-compare --plain --range 5
+ai-cost-compare --plain --range 5
 ```
 
 ### Flags
@@ -190,11 +190,11 @@ flowchart LR
 ## 🛠 Development
 
 ```bash
-git clone https://github.com/mazulo/claude-cost-compare.git
-cd claude-cost-compare
+git clone https://github.com/mazulo/ai-cost-compare.git
+cd ai-cost-compare
 uv sync --dev
 uv run pytest
-uv run claude-cost-compare --range 5
+uv run ai-cost-compare --range 5
 ```
 
 Regenerate the README demo SVG after UI changes:
@@ -207,7 +207,7 @@ uv run python scripts/export_demo.py
 
 ## 🚢 Releasing
 
-Bump `version` in `pyproject.toml` and `src/claude_cost_compare/__init__.py`, push to `main`, then run the **Publish** workflow from GitHub Actions. It will:
+Bump `version` in `pyproject.toml` and `src/ai_cost_compare/__init__.py`, push to `main`, then run the **Publish** workflow from GitHub Actions. It will:
 
 1. Run tests and publish to PyPI
 2. Update the Homebrew formula checksum
@@ -228,6 +228,6 @@ MIT — see [LICENSE](LICENSE).
 
 Built for Claude Code power users who want spend visibility without leaving the terminal.
 
-**[⭐ Star on GitHub](https://github.com/mazulo/claude-cost-compare)** if this saves you from an Opus routing surprise.
+**[⭐ Star on GitHub](https://github.com/mazulo/ai-cost-compare)** if this saves you from an Opus routing surprise.
 
 </div>

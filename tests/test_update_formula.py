@@ -6,9 +6,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_update_formula_script_replaces_main_artifact_only(tmp_path: Path) -> None:
-    formula = tmp_path / "claude-cost-compare.rb"
+    formula = tmp_path / "ai-cost-compare.rb"
     formula.write_text(
-        'class ClaudeCostCompare < Formula\n'
+        'class AiCostCompare < Formula\n'
         '  url "https://example.com/old.tar.gz"\n'
         '  sha256 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"\n'
         '  resource "attrs" do\n'

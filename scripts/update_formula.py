@@ -7,7 +7,7 @@ import argparse
 import re
 from pathlib import Path
 
-FORMULA_PATH = Path("Formula/claude-cost-compare.rb")
+FORMULA_PATH = Path("Formula/ai-cost-compare.rb")
 ARTIFACT_PATTERN = re.compile(
     r'(  url ")[^"]+("\n  sha256 ")[a-f0-9]{64}(")',
     re.MULTILINE,

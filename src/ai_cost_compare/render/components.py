@@ -4,13 +4,13 @@ from rich.console import Console
 from rich.table import Table
 from rich.text import Text
 
-from claude_cost_compare.render.formatters import (
+from ai_cost_compare.render.formatters import (
     cost_style,
     era_label,
     era_style,
     fmt_cost,
 )
-from claude_cost_compare.render.theme import (
+from ai_cost_compare.render.theme import (
     MUTED,
     SECTION_TITLE,
     TABLE_BORDER,

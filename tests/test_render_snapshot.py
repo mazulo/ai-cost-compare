@@ -7,9 +7,9 @@ from unittest.mock import patch
 import pytest
 from rich.console import Console
 
-from claude_cost_compare.analysis.windows import split_records, window_stats
-from claude_cost_compare.data.parser import parse_daily_records
-from claude_cost_compare.render.report import render_report
+from ai_cost_compare.analysis.windows import split_records, window_stats
+from ai_cost_compare.data.parser import parse_daily_records
+from ai_cost_compare.render.report import render_report
 
 FIXTURE = Path(__file__).parent / "fixtures" / "sample_daily.json"
 
@@ -55,18 +55,18 @@ def test_find_ccusage_from_path(tmp_path):
     fake = tmp_path / "ccusage"
     fake.write_text("#!/bin/sh\necho '{\"daily\":[]}'\n")
     fake.chmod(0o755)
-    from claude_cost_compare.data.ccusage import fetch_daily
+    from ai_cost_compare.data.ccusage import fetch_daily
 
-    with patch("claude_cost_compare.data.ccusage.find_ccusage", return_value=fake):
+    with patch("ai_cost_compare.data.ccusage.find_ccusage", return_value=fake):
         data = fetch_daily(date(2026, 5, 1), date(2026, 5, 2), ccusage_bin=fake)
     assert data == {"daily": []}
 
 
 def test_find_ccusage_missing():
-    from claude_cost_compare.data.ccusage import find_ccusage
-    from claude_cost_compare.errors import CcusageNotFoundError
+    from ai_cost_compare.data.ccusage import find_ccusage
+    from ai_cost_compare.errors import CcusageNotFoundError
 
-    with patch("claude_cost_compare.data.ccusage._nvm_ccusage_paths", return_value=[]):
+    with patch("ai_cost_compare.data.ccusage._nvm_ccusage_paths", return_value=[]):
         with patch("shutil.which", return_value=None):
             with pytest.raises(CcusageNotFoundError):
                 find_ccusage()

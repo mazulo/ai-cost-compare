@@ -4,11 +4,11 @@ from rich.console import Console
 from rich.table import Table
 from rich.text import Text
 
-from claude_cost_compare.analysis.deltas import compare_windows
-from claude_cost_compare.analysis.verdicts import verdict_haiku, verdict_opus, verdict_sonnet
-from claude_cost_compare.analysis.windows import window_stats
-from claude_cost_compare.data.models import DailyRecord, WindowStats
-from claude_cost_compare.render.components import (
+from ai_cost_compare.analysis.deltas import compare_windows
+from ai_cost_compare.analysis.verdicts import verdict_haiku, verdict_opus, verdict_sonnet
+from ai_cost_compare.analysis.windows import window_stats
+from ai_cost_compare.data.models import DailyRecord, WindowStats
+from ai_cost_compare.render.components import (
     base_table,
     era_cell,
     legend,
@@ -17,7 +17,7 @@ from claude_cost_compare.render.components import (
     styled_cost,
     styled_pct,
 )
-from claude_cost_compare.render.formatters import (
+from ai_cost_compare.render.formatters import (
     era_label,
     fmt_tokens,
     mix_bar,
@@ -28,7 +28,7 @@ from claude_cost_compare.render.formatters import (
     share_bar,
     sonnet_share_style,
 )
-from claude_cost_compare.render.theme import INACTIVE, MUTED, ZERO
+from ai_cost_compare.render.theme import INACTIVE, MUTED, ZERO
 
 MIX_WIDTH = 10
 MIX_COL = MIX_WIDTH + 2

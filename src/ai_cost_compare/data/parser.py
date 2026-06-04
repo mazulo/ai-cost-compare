@@ -2,9 +2,9 @@ from collections import defaultdict
 from datetime import date
 from typing import Any
 
-from claude_cost_compare.config import model_family
-from claude_cost_compare.data.models import DailyRecord
-from claude_cost_compare.errors import CliError
+from ai_cost_compare.config import model_family
+from ai_cost_compare.data.models import DailyRecord
+from ai_cost_compare.errors import CliError
 
 
 def parse_daily_records(raw: dict[str, Any]) -> list[DailyRecord]:
@@ -35,7 +35,7 @@ def _parse_day_date(day: dict[str, Any]) -> date:
     if raw is None:
         raise CliError(
             "Unrecognized ccusage daily JSON: expected 'date' or 'period' on each daily row. "
-            "Use `ccusage daily --json` and ccusage >=18 with claude-cost-compare."
+            "Use `ccusage daily --json` and ccusage >=18 with ai-cost-compare."
         )
     if isinstance(raw, date):
         return raw

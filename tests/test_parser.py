@@ -4,10 +4,10 @@ from pathlib import Path
 
 import pytest
 
-from claude_cost_compare.analysis.deltas import compare_windows, pct
-from claude_cost_compare.analysis.verdicts import verdict_opus, verdict_sonnet
-from claude_cost_compare.analysis.windows import split_records, window_stats
-from claude_cost_compare.data.parser import parse_daily_records
+from ai_cost_compare.analysis.deltas import compare_windows, pct
+from ai_cost_compare.analysis.verdicts import verdict_opus, verdict_sonnet
+from ai_cost_compare.analysis.windows import split_records, window_stats
+from ai_cost_compare.data.parser import parse_daily_records
 
 FIXTURE = Path(__file__).parent / "fixtures" / "sample_daily.json"
 
