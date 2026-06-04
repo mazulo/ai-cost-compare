@@ -6,8 +6,8 @@ import pytest
 
 from ai_cost_compare.core.deltas import compare_windows, pct
 from ai_cost_compare.core.windows import split_records, window_stats
-from ai_cost_compare.providers.claude.parse import parse_daily_records
-from ai_cost_compare.providers.claude.verdicts import verdict_opus, verdict_sonnet
+from ai_cost_compare.providers.claude.parse import ClaudeParser
+from ai_cost_compare.providers.claude.verdicts import ClaudeVerdicts
 
 FIXTURE = Path(__file__).parent / "fixtures" / "sample_daily.json"
 
@@ -15,7 +15,12 @@ FIXTURE = Path(__file__).parent / "fixtures" / "sample_daily.json"
 @pytest.fixture
 def records():
     raw = json.loads(FIXTURE.read_text())
-    return parse_daily_records(raw)
+    return ClaudeParser().parse(raw)
+
+
+@pytest.fixture
+def verdicts():
+    return ClaudeVerdicts()
 
 
 def test_parse_daily_records(records):
@@ -27,7 +32,7 @@ def test_parse_daily_records(records):
 
 def test_parse_daily_records_ccusage_v20_period_field():
     raw = json.loads((Path(__file__).parent / "fixtures" / "sample_daily_v20.json").read_text())
-    records = parse_daily_records(raw)
+    records = ClaudeParser().parse(raw)
     assert len(records) == 2
     assert records[0].date == date(2026, 5, 6)
     assert records[1].date == date(2026, 5, 7)
@@ -55,7 +60,7 @@ def test_parse_daily_records_merges_duplicate_period_rows():
             },
         ]
     }
-    records = parse_daily_records(raw)
+    records = ClaudeParser().parse(raw)
     assert len(records) == 1
     assert records[0].cost == pytest.approx(15.0)
     assert records[0].tokens == 150
@@ -89,14 +94,14 @@ def test_compare_windows(records):
     assert isinstance(comparison.delta_avg, float)
 
 
-def test_verdict_opus_leak():
-    style, text = verdict_opus(81, 90)
+def test_verdict_opus_leak(verdicts):
+    style, text = verdicts.opus(81, 90)
     assert style == "red"
     assert "Routing leak" in text
 
 
-def test_verdict_sonnet_active():
-    style, text = verdict_sonnet(31, 10)
+def test_verdict_sonnet_active(verdicts):
+    style, text = verdicts.sonnet(31, 10)
     assert style == "green"
     assert "Routing active" in text
 

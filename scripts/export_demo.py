@@ -14,7 +14,7 @@ from pathlib import Path
 from rich.console import Console
 
 from ai_cost_compare.core.windows import split_records, window_stats
-from ai_cost_compare.providers.claude.parse import parse_daily_records
+from ai_cost_compare.providers.claude.parse import ClaudeParser
 from ai_cost_compare.render.report import (
     COST_COL,
     DATE_COL,
@@ -72,7 +72,7 @@ def export_demo(
     width: int = DEFAULT_WIDTH,
     png_width: int = 1400,
 ) -> Path:
-    records = parse_daily_records(json.loads(FIXTURE.read_text(encoding="utf-8")))
+    records = ClaudeParser().parse(json.loads(FIXTURE.read_text(encoding="utf-8")))
     cutoff = date(2026, 5, 8)
     before, after = split_records(records, cutoff)
 

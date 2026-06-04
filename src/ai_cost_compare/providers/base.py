@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import date
@@ -44,6 +45,27 @@ class VerdictProfile:
 class ReportTitles:
     daily: str
     signal: str = "REAL SIGNAL"
+
+
+class UsageFetcher(ABC):
+    @abstractmethod
+    def fetch(self, ctx: FetchContext) -> Any: ...
+
+
+class UsageParser(ABC):
+    @abstractmethod
+    def parse(self, raw: Any) -> list[DailyRecord]: ...
+
+
+class VerdictEngine(ABC):
+    @staticmethod
+    def _delta_suffix(was_p: int | None, now_p: int) -> str:
+        if was_p is not None and was_p != now_p:
+            return f"  (was {was_p}%)"
+        return ""
+
+    @abstractmethod
+    def profile(self) -> VerdictProfile: ...
 
 
 class UsageProvider(Protocol):
