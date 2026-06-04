@@ -24,7 +24,7 @@ from ai_cost_compare.render.formatters import (
     pp_style,
     share_bar,
 )
-from ai_cost_compare.render.theme import INACTIVE, MUTED, ZERO
+from ai_cost_compare.render.theme import INACTIVE, MUTED
 
 MIX_WIDTH = 10
 MIX_COL = MIX_WIDTH + 2
@@ -120,7 +120,7 @@ def _add_daily_row(
     *,
     cutoff: date | None = None,
 ) -> None:
-    row: list[object] = [str(record.date)]
+    row: list[Text | str] = [str(record.date)]
     if cutoff is not None:
         row.append(era_cell(record.date, cutoff))
     row.extend(

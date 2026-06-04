@@ -2,9 +2,7 @@
 
 from ai_cost_compare.core.errors import CursorDataError
 
-CURSOR_EXPORT_URL = (
-    "https://cursor.com/api/dashboard/export-usage-events-csv?strategy=tokens"
-)
+CURSOR_EXPORT_URL = "https://cursor.com/api/dashboard/export-usage-events-csv?strategy=tokens"
 
 
 def fetch_usage_csv(session_token: str) -> str:

@@ -1,7 +1,3 @@
-"""User config (~/.config/ai-cost-compare/config.toml)."""
-
-from __future__ import annotations
-
 import os
 from pathlib import Path
 

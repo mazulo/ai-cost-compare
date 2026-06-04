@@ -1,6 +1,7 @@
 import csv
 import io
 from collections import defaultdict
+from collections.abc import Sequence
 from datetime import date, datetime
 from pathlib import Path
 
@@ -54,7 +55,7 @@ def parse_usage_file(path: Path) -> list[DailyRecord]:
 
 
 def _find_column(
-    fieldnames: list[str],
+    fieldnames: Sequence[str],
     candidates: tuple[str, ...],
     *,
     required: bool = True,
