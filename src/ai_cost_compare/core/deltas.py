@@ -8,19 +8,20 @@ def pct(value: float, total: float) -> int:
 def compare_windows(
     before: WindowStats | None,
     after: WindowStats | None,
+    *,
+    buckets: tuple[str, ...],
 ) -> ComparisonResult | None:
     if not before or not after:
         return None
-    before_mix = before.mix
-    after_mix = after.mix
+    delta_mix_pp: dict[str, int] = {}
+    for bucket in buckets:
+        delta_mix_pp[bucket] = pct(after.mix.get(bucket, 0.0), after.total) - pct(
+            before.mix.get(bucket, 0.0),
+            before.total,
+        )
     return ComparisonResult(
         before=before,
         after=after,
         delta_avg=after.avg - before.avg,
-        delta_opus_pp=pct(after_mix.get("opus", 0.0), after.total)
-        - pct(before_mix.get("opus", 0.0), before.total),
-        delta_sonnet_pp=pct(after_mix.get("sonnet", 0.0), after.total)
-        - pct(before_mix.get("sonnet", 0.0), before.total),
-        delta_haiku_pp=pct(after_mix.get("haiku", 0.0), after.total)
-        - pct(before_mix.get("haiku", 0.0), before.total),
+        delta_mix_pp=delta_mix_pp,
     )

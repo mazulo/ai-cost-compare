@@ -80,7 +80,11 @@ def test_split_records(records):
 def test_compare_windows(records):
     cutoff = date(2026, 5, 8)
     before, after = split_records(records, cutoff)
-    comparison = compare_windows(window_stats(before), window_stats(after))
+    comparison = compare_windows(
+        window_stats(before),
+        window_stats(after),
+        buckets=("opus", "sonnet", "haiku"),
+    )
     assert comparison is not None
     assert isinstance(comparison.delta_avg, float)
 

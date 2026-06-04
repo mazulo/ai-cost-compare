@@ -1,7 +1,5 @@
 """Claude-specific thresholds and model family mapping."""
 
-COST_WARN = 20.0
-COST_ALERT = 50.0
 OPUS_LEAK = 80
 OPUS_HIGH = 60
 OPUS_IMPROVING = 40

@@ -83,8 +83,11 @@ def export_demo(
         color_system="truecolor",
         _environ={"COLUMNS": str(width), "LINES": "40"},
     )
+    from ai_cost_compare.providers.registry import get
+
     render_report(
         console,
+        provider=get("claude"),
         records=records,
         cutoff=cutoff,
         summary_mode=False,

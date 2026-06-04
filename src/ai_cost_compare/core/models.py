@@ -23,6 +23,4 @@ class ComparisonResult:
     before: WindowStats | None
     after: WindowStats | None
     delta_avg: float
-    delta_opus_pp: int
-    delta_sonnet_pp: int
-    delta_haiku_pp: int
+    delta_mix_pp: dict[str, int]

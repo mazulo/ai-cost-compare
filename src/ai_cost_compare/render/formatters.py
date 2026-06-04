@@ -1,15 +1,8 @@
 from rich.text import Text
 
-from ai_cost_compare.providers.claude import config
-from ai_cost_compare.render.theme import (
-    BAR_EMPTY,
-    ERA_AFTER,
-    ERA_BEFORE,
-    ERA_TODAY,
-    FAINT,
-    INACTIVE,
-    ZERO,
-)
+from ai_cost_compare.core import config
+from ai_cost_compare.providers.base import ModelTaxonomy
+from ai_cost_compare.render.theme import BAR_EMPTY, ERA_AFTER, ERA_BEFORE, ERA_TODAY, FAINT
 
 
 def pct(value: float, total: float) -> int:
@@ -34,42 +27,6 @@ def cost_style(amount: float) -> str:
     if amount > config.COST_WARN:
         return "yellow"
     return "green"
-
-
-def opus_share_style(share: int) -> str:
-    if share > config.OPUS_LEAK:
-        return "bold red"
-    if share > 50:
-        return "yellow"
-    return "green"
-
-
-def sonnet_share_style(share: int) -> str:
-    if share > config.SONNET_ACTIVE:
-        return "bold green"
-    if share > 0:
-        return "white"
-    return ZERO
-
-
-def model_name_style(family: str, share: int) -> str:
-    if family == "opus":
-        if share > config.OPUS_LEAK:
-            return "bold red"
-        if share > 50:
-            return "yellow"
-        return "white"
-    if family == "sonnet":
-        if share > config.SONNET_ACTIVE:
-            return "bold green"
-        if share > 0:
-            return "white"
-        return INACTIVE
-    if share > config.HAIKU_DELEGATING:
-        return "bright_cyan"
-    if share > 0:
-        return "cyan"
-    return INACTIVE
 
 
 def pp_style(value: int, *, good_if_neg: bool) -> str:
@@ -102,10 +59,7 @@ def era_style(era: str) -> str:
     return ERA_BEFORE
 
 
-def mix_bar(op: int, so: int, ha: int, width: int = 14) -> Text:
-    """Proportional colored bar for model cost mix."""
-    shares = [op, so, ha]
-    colors = ["red", "green", "bright_cyan"]
+def mix_bar(shares: list[int], colors: list[str], width: int = 14) -> Text:
     total = sum(shares)
     if total == 0:
         return Text("░" * width, style=BAR_EMPTY)
@@ -113,7 +67,7 @@ def mix_bar(op: int, so: int, ha: int, width: int = 14) -> Text:
     blocks = [round(share / total * width) for share in shares]
     drift = width - sum(blocks)
     if drift:
-        largest = max(range(3), key=lambda index: shares[index])
+        largest = max(range(len(shares)), key=lambda index: shares[index])
         blocks[largest] += drift
 
     bar = Text()
@@ -123,8 +77,19 @@ def mix_bar(op: int, so: int, ha: int, width: int = 14) -> Text:
     return bar
 
 
+def mix_bar_for_taxonomy(
+    mix: dict[str, float],
+    total: float,
+    taxonomy: ModelTaxonomy,
+    *,
+    width: int = 14,
+) -> Text:
+    shares = [pct(mix.get(bucket, 0.0), total) for bucket in taxonomy.buckets]
+    colors = [taxonomy.bar_colors.get(bucket, "white") for bucket in taxonomy.buckets]
+    return mix_bar(shares, colors, width=width)
+
+
 def share_bar(share: int, color: str, width: int = 14) -> Text:
-    """Single-model share bar for signal rows."""
     filled = round(share / 100 * width)
     if share > 0 and filled == 0:
         filled = 1

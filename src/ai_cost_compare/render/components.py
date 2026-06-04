@@ -4,19 +4,9 @@ from rich.console import Console
 from rich.table import Table
 from rich.text import Text
 
-from ai_cost_compare.render.formatters import (
-    cost_style,
-    era_label,
-    era_style,
-    fmt_cost,
-)
-from ai_cost_compare.render.theme import (
-    MUTED,
-    SECTION_TITLE,
-    TABLE_BORDER,
-    TABLE_BOX,
-    TABLE_HEADER,
-)
+from ai_cost_compare.providers.base import VerdictProfile
+from ai_cost_compare.render.formatters import cost_style, era_label, era_style, fmt_cost
+from ai_cost_compare.render.theme import MUTED, SECTION_TITLE, TABLE_BORDER, TABLE_BOX, TABLE_HEADER
 
 
 def section(console: Console, title: str, subtitle: str = "") -> None:
@@ -66,17 +56,12 @@ def era_cell(record_date: date, cutoff: date) -> Text:
     return Text(labels.get(era, era.strip()), style=era_style(era))
 
 
-def legend(console: Console) -> None:
+def legend(console: Console, profile: VerdictProfile) -> None:
+    if not profile.legend_items:
+        return
     console.print()
     line = Text("Legend  ", style=MUTED)
-    for label, color in (
-        ("Opus >80%", "bold red"),
-        ("50–80%", "yellow"),
-        ("<50%", "green"),
-        ("Sonnet >30%", "bold green"),
-        ("Cost >$50", "bold red"),
-        (">$20", "yellow"),
-    ):
+    for label, color in profile.legend_items:
         line.append(" ● ", style=color)
         line.append(label, style=MUTED)
         line.append("   ")

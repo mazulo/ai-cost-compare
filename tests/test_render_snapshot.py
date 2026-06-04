@@ -20,8 +20,11 @@ def test_render_report_contains_sections():
     before, after = split_records(records, cutoff)
     output = StringIO()
     console = Console(file=output, force_terminal=True, width=100, color_system="truecolor")
+    from ai_cost_compare.providers.registry import get
+
     render_report(
         console,
+        provider=get("claude"),
         records=records,
         cutoff=cutoff,
         summary_mode=False,
@@ -38,8 +41,11 @@ def test_render_summary_mode_skips_comparison():
     records = parse_daily_records(json.loads(FIXTURE.read_text()))
     output = StringIO()
     console = Console(file=output, force_terminal=True, width=100, color_system="truecolor")
+    from ai_cost_compare.providers.registry import get
+
     render_report(
         console,
+        provider=get("claude"),
         records=records,
         cutoff=date(2026, 5, 8),
         summary_mode=True,

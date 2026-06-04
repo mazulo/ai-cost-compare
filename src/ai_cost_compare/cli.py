@@ -41,6 +41,7 @@ def main(
     console = make_console(plain=plain)
     render_report(
         console,
+        provider=provider,
         records=records,
         cutoff=split_date,
         summary_mode=summary,
