@@ -95,13 +95,13 @@ def test_compare_windows(records):
 
 
 def test_verdict_opus_leak(verdicts):
-    style, text = verdicts.opus(81, 90)
+    style, text = verdicts.evaluate("opus", 81, 90)
     assert style == "red"
     assert "Routing leak" in text
 
 
 def test_verdict_sonnet_active(verdicts):
-    style, text = verdicts.sonnet(31, 10)
+    style, text = verdicts.evaluate("sonnet", 31, 10)
     assert style == "green"
     assert "Routing active" in text
 
