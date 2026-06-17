@@ -58,7 +58,7 @@ def render_report(
     titles = provider.titles()
 
     start = records[0].date if records else "—"
-    end = date.today()
+    end = cutoff
     section(console, titles.daily, f"{start} → {end}")
 
     if not records:
@@ -151,9 +151,13 @@ def _render_daily_with_eras(
     cutoff: date,
     taxonomy: ModelTaxonomy,
 ) -> None:
+    before = [r for r in records if r.date < cutoff]
+    after = [r for r in records if r.date >= cutoff]
+    display_records = before + after[:1]
+
     table = _daily_columns(with_era=True, taxonomy=taxonomy)
     prev_era: str | None = None
-    for record in records:
+    for record in display_records:
         era = era_label(record.date, cutoff)
         if prev_era and era != prev_era:
             table.add_section()
