@@ -3,8 +3,8 @@ class AiCostCompare < Formula
 
   desc "Daily AI cost analysis (Claude Code, Cursor) with before/after comparison"
   homepage "https://github.com/mazulo/ai-cost-compare"
-  url "https://files.pythonhosted.org/packages/9d/6f/ec678f2bb526bc4140f608c2083d7a1cd72f527d5580280f7b9fc681f5f4/ai_cost_compare-0.1.2.tar.gz"
-  sha256 "06d0188aff537703c6182dc727ddee25cfe8b02299d44a9a04eb04a1cef27e43"
+  url "https://files.pythonhosted.org/packages/84/7e/c8cdf7fccf782b20594d1c58c05d5aaf9d08c2284b54481c9da6f389d2f6/ai_cost_compare-0.3.0.tar.gz"
+  sha256 "029c32afa4b9accc2cd2ec3ffc37adbac0147de9b571bbd05a9f9984e5e97ff2"
   license "MIT"
 
   depends_on "node"
@@ -16,8 +16,8 @@ class AiCostCompare < Formula
   end
 
   resource "cyclopts" do
-    url "https://files.pythonhosted.org/packages/34/07/bf61d13de86d96a4c46aff00c9ca0eced44bcc8c3e16280605c1253e5720/cyclopts-4.16.1.tar.gz"
-    sha256 "8aa47bf92a5fb33abca5af05e576eecdb0d2f79893ad29238046df78370fc4a8"
+    url "https://files.pythonhosted.org/packages/9a/19/5c438b428b3dca208eb920804dc16aeb3ca1e85d6163d17e8fb0785ead19/cyclopts-4.18.0.tar.gz"
+    sha256 "fb7b730f21932e0784f7e54462df0447aaa1fbf034d65b605bd8a25dce58b188"
   end
 
   resource "docstring-parser" do
