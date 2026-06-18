@@ -1,12 +1,12 @@
 [project]
-name = "claude-cost-compare"
-version = "0.1.3"
-description = "Daily Claude cost analysis with before/after comparison and model health signals"
+name = "ai-cost-compare"
+version = "0.3.0"
+description = "Daily AI usage cost analysis with before/after comparison and model health signals"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.11"
 authors = [{ name = "Patrick Mazulo", email = "pmazulo@gmail.com" }]
-keywords = ["claude", "cost", "ccusage", "cli"]
+keywords = ["ai", "claude", "cursor", "cost", "ccusage", "cli"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: Console",
@@ -22,31 +22,48 @@ dependencies = [
     "cyclopts>=4.0",
 ]
 
+[project.optional-dependencies]
+cursor-api = ["httpx>=0.27"]
+
 [project.scripts]
-claude-cost-compare = "claude_cost_compare.cli:run"
+ai-cost-compare = "ai_cost_compare.cli:run"
+aicost = "ai_cost_compare.cli:run"
+claude-cost-compare = "ai_cost_compare.cli:run_claude_legacy"
+cccompare = "ai_cost_compare.cli:run_claude_legacy"
 
 [project.urls]
-Homepage = "https://github.com/mazulo/claude-cost-compare"
-Repository = "https://github.com/mazulo/claude-cost-compare"
+Homepage = "https://github.com/mazulo/ai-cost-compare"
+Repository = "https://github.com/mazulo/ai-cost-compare"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/claude_cost_compare"]
+packages = ["src/ai_cost_compare"]
 
 [tool.hatch.build.targets.wheel.sources]
-"src/claude_cost_compare" = "claude_cost_compare"
+"src/ai_cost_compare" = "ai_cost_compare"
 
 [dependency-groups]
 dev = [
     "pytest>=8.0",
     "ruff>=0.9",
+    "httpx>=0.27",
+    "pytest-cov>=7.1.0",
 ]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+addopts = ["--import-mode=importlib"]
+
+[tool.coverage.run]
+source = ["ai_cost_compare"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 88
 
 [tool.ruff]
 line-length = 100

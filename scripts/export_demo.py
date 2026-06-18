@@ -13,9 +13,9 @@ from pathlib import Path
 
 from rich.console import Console
 
-from claude_cost_compare.analysis.windows import split_records, window_stats
-from claude_cost_compare.data.parser import parse_daily_records
-from claude_cost_compare.render.report import (
+from ai_cost_compare.core.windows import split_records, window_stats
+from ai_cost_compare.providers.claude.parse import ClaudeParser
+from ai_cost_compare.render.report import (
     COST_COL,
     DATE_COL,
     DAYS_COL,
@@ -72,7 +72,7 @@ def export_demo(
     width: int = DEFAULT_WIDTH,
     png_width: int = 1400,
 ) -> Path:
-    records = parse_daily_records(json.loads(FIXTURE.read_text(encoding="utf-8")))
+    records = ClaudeParser().parse(json.loads(FIXTURE.read_text(encoding="utf-8")))
     cutoff = date(2026, 5, 8)
     before, after = split_records(records, cutoff)
 
@@ -83,8 +83,11 @@ def export_demo(
         color_system="truecolor",
         _environ={"COLUMNS": str(width), "LINES": "40"},
     )
+    from ai_cost_compare.providers.registry import get
+
     render_report(
         console,
+        provider=get("claude"),
         records=records,
         cutoff=cutoff,
         summary_mode=False,
@@ -93,7 +96,7 @@ def export_demo(
     )
 
     svg_output.parent.mkdir(parents=True, exist_ok=True)
-    svg = _prepare_svg_for_raster(console.export_svg(title="claude-cost-compare"))
+    svg = _prepare_svg_for_raster(console.export_svg(title="ai-cost-compare"))
     svg_output.write_text(svg, encoding="utf-8")
 
     for png_path in (png_output, social_png_output):

@@ -14,7 +14,7 @@ import tempfile
 import urllib.request
 from pathlib import Path
 
-FORMULA_PATH = Path("Formula/claude-cost-compare.rb")
+FORMULA_PATH = Path("Formula/ai-cost-compare.rb")
 RESOURCE_BLOCK = re.compile(
     r'\n  resource "[^"]+" do\n(?:    .+\n)+?  end',
     re.MULTILINE,
@@ -140,7 +140,7 @@ def sync_formula_resources(
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--package", default="claude-cost-compare")
+    parser.add_argument("--package", default="ai-cost-compare")
     parser.add_argument("--version", required=True)
     parser.add_argument("--formula", type=Path, default=FORMULA_PATH)
     args = parser.parse_args()

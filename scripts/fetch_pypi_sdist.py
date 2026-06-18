@@ -11,13 +11,13 @@ import urllib.request
 
 
 def fetch_sdist(version: str) -> tuple[str, str]:
-    url = f"https://pypi.org/pypi/claude-cost-compare/{version}/json"
+    url = f"https://pypi.org/pypi/ai-cost-compare/{version}/json"
     with urllib.request.urlopen(url, timeout=30) as response:
         data = json.load(response)
     for artifact in data["urls"]:
         if artifact["packagetype"] == "sdist":
             return artifact["url"], artifact["digests"]["sha256"]
-    raise RuntimeError(f"No sdist found for claude-cost-compare {version}")
+    raise RuntimeError(f"No sdist found for ai-cost-compare {version}")
 
 
 def main() -> int:
