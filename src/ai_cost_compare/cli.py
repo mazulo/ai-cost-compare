@@ -43,15 +43,16 @@ def _run_provider(
         records = [record for record in records if since_date <= record.date <= until_date]
 
     before_records, after_records = split_records(records, split_date)
+    display_after = after_records[:1]
     console = make_console(plain=plain)
     render_report(
         console,
         provider=provider,
-        records=records,
+        records=before_records + display_after,
         cutoff=split_date,
         summary_mode=summary,
         before=window_stats(before_records),
-        after=window_stats(after_records),
+        after=window_stats(display_after),
     )
 
 

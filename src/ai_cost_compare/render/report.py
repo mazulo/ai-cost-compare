@@ -151,13 +151,9 @@ def _render_daily_with_eras(
     cutoff: date,
     taxonomy: ModelTaxonomy,
 ) -> None:
-    before = [r for r in records if r.date < cutoff]
-    after = [r for r in records if r.date >= cutoff]
-    display_records = before + after[:1]
-
     table = _daily_columns(with_era=True, taxonomy=taxonomy)
     prev_era: str | None = None
-    for record in display_records:
+    for record in records:
         era = era_label(record.date, cutoff)
         if prev_era and era != prev_era:
             table.add_section()
@@ -188,6 +184,8 @@ def _render_comparison(
         *_bucket_columns(taxonomy),
     )
 
+    ref_n = after.n if after else (before.n if before else 1)
+
     def add_window(label: str, stats: WindowStats | None, label_style: str) -> None:
         if not stats:
             table.add_row(
@@ -199,11 +197,12 @@ def _render_comparison(
                 *[Text("—", style=MUTED) for _ in taxonomy.buckets],
             )
             return
+        normalized_total = stats.avg * ref_n
         table.add_row(
             Text(label, style=label_style),
             str(stats.n),
             styled_cost(stats.avg),
-            Text(f"${stats.total:,.2f}", style="white"),
+            Text(f"${normalized_total:,.2f}", style="white"),
             mix_bar_for_taxonomy(stats.mix, stats.total, taxonomy, width=MIX_WIDTH),
             *_bucket_cells(stats.mix, stats.total, taxonomy),
         )
