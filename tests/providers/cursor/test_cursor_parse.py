@@ -70,3 +70,19 @@ def test_parse_us_date_format(parser):
 def test_parse_skips_blank_rows(parser):
     records = parser.parse_csv("Date,Model,Cost,Cost to you\n2026-05-01,claude-opus-4-6,1,1\n,,,\n")
     assert len(records) == 1
+
+
+def test_parse_included_cost_treated_as_zero(parser):
+    records = parser.parse_csv(
+        "Date,Model,Cost,Cost to you\n2026-06-01,claude-sonnet-4-6,Included,Included\n"
+    )
+    assert len(records) == 1
+    assert records[0].cost == pytest.approx(0.0)
+
+
+def test_parse_free_cost_treated_as_zero(parser):
+    records = parser.parse_csv(
+        "Date,Model,Cost,Cost to you\n2026-06-01,claude-sonnet-4-6,Free,Free\n"
+    )
+    assert len(records) == 1
+    assert records[0].cost == pytest.approx(0.0)

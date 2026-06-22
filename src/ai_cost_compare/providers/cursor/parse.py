@@ -96,9 +96,10 @@ class CursorParser(UsageParser):
         return date.fromisoformat(text)
 
     def _parse_money(self, raw: str) -> float:
-        text = raw.strip().replace("$", "").replace(",", "")
-        if not text:
+        text = raw.strip()
+        if text.lower() in ("included", "free", ""):
             return 0.0
+        text = text.replace("$", "").replace(",", "")
         try:
             return float(text)
         except ValueError as exc:
