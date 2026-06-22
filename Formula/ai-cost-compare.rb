@@ -3,8 +3,8 @@ class AiCostCompare < Formula
 
   desc "Daily AI cost analysis (Claude Code, Cursor) with before/after comparison"
   homepage "https://github.com/mazulo/ai-cost-compare"
-  url "https://files.pythonhosted.org/packages/84/7e/c8cdf7fccf782b20594d1c58c05d5aaf9d08c2284b54481c9da6f389d2f6/ai_cost_compare-0.3.0.tar.gz"
-  sha256 "029c32afa4b9accc2cd2ec3ffc37adbac0147de9b571bbd05a9f9984e5e97ff2"
+  url "https://files.pythonhosted.org/packages/85/95/3630a42437021fe46b21071fa5f3474d83118349bfd59551497e7ada666a/ai_cost_compare-0.3.1.tar.gz"
+  sha256 "93d8ef3b96596f66452c986a5aa130892ab5d20f3579f3c4741b64e7acdc8717"
   license "MIT"
 
   depends_on "node"
