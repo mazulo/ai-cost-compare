@@ -86,3 +86,11 @@ def test_parse_free_cost_treated_as_zero(parser):
     )
     assert len(records) == 1
     assert records[0].cost == pytest.approx(0.0)
+
+
+def test_parse_dash_cost_treated_as_zero(parser):
+    records = parser.parse_csv(
+        "Date,Model,Cost,Cost to you\n2026-06-01,claude-sonnet-4-6,-,-\n"
+    )
+    assert len(records) == 1
+    assert records[0].cost == pytest.approx(0.0)

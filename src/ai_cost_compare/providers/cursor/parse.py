@@ -97,7 +97,7 @@ class CursorParser(UsageParser):
 
     def _parse_money(self, raw: str) -> float:
         text = raw.strip()
-        if text.lower() in ("included", "free", ""):
+        if text.lower() in ("included", "free", "-", "n/a", ""):
             return 0.0
         text = text.replace("$", "").replace(",", "")
         try:
