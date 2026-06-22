@@ -5,6 +5,7 @@ from typing import Annotated
 
 from cyclopts import App, Parameter
 
+from ai_cost_compare.config_store import config_path, ensure_config
 from ai_cost_compare.core.errors import CliError
 from ai_cost_compare.core.windows import compute_since, split_records, window_stats
 from ai_cost_compare.providers.base import FetchContext
@@ -95,7 +96,36 @@ def cursor(
         Parameter(name="--cursor-token", help="WorkosCursorSessionToken (overrides config)"),
     ] = None,
 ) -> None:
-    """Daily Cursor IDE cost analysis from dashboard CSV export."""
+    """Daily Cursor IDE cost analysis.
+
+    **Data sources (pick one):**
+
+    * `--file PATH` — CSV exported from https://cursor.com/dashboard/usage
+    * Session token — fetched automatically from the Cursor dashboard API
+
+    **Setting up the session token:**
+
+    1. Open https://cursor.com/settings (any cursor.com page while logged in)
+    2. Open browser DevTools → Application → Cookies → cursor.com
+    3. Copy the value of `WorkosCursorSessionToken`
+    4. Paste it into `~/.config/ai-cost-compare/config.toml`:
+
+    ```toml
+    [cursor]
+    session_token = "your-token-here"
+    ```
+
+    Or pass it inline: `--cursor-token YOUR_TOKEN`
+    """
+    created = ensure_config()
+    if created:
+        cfg = config_path()
+        print(
+            f"Created config file: {cfg}\n"
+            "Add your WorkosCursorSessionToken there to enable automatic fetch.\n"
+            "See `ai-cost-compare cursor --help` for instructions.\n",
+            file=sys.stderr,
+        )
     _run_provider(
         "cursor",
         range_days=range_days,

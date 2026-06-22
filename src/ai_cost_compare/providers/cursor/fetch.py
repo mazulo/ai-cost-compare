@@ -18,11 +18,22 @@ class CursorFetcher(UsageFetcher):
         token = ctx.cursor_token or load_cursor_token()
         if token:
             return self.fetch_from_api(token)
+        from ai_cost_compare.config_store import config_path
+
+        cfg = config_path()
         raise CursorDataError(
-            "Cursor usage requires --file PATH or a session token.\n"
-            "  CSV: export from https://cursor.com/dashboard/usage\n"
-            "  API: pip install 'ai-cost-compare[cursor-api]' and set "
-            "[cursor] session_token in ~/.config/ai-cost-compare/config.toml"
+            "Cursor usage requires --file PATH or a session token.\n\n"
+            "Option A — CSV export:\n"
+            "  1. Go to https://cursor.com/dashboard/usage and export a CSV\n"
+            "  2. Run: ai-cost-compare cursor --file ~/Downloads/usage.csv\n\n"
+            "Option B — session token (auto-fetch):\n"
+            "  1. Open https://cursor.com/settings in your browser\n"
+            "  2. DevTools → Application → Cookies → cursor.com\n"
+            "  3. Copy the value of WorkosCursorSessionToken\n"
+            f"  4. Edit {cfg}:\n"
+            "       [cursor]\n"
+            '       session_token = "paste-your-token-here"\n'
+            "  (requires: pip install 'ai-cost-compare[cursor-api]')"
         )
 
     def read_file(self, path: Path) -> str:
