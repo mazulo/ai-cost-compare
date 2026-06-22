@@ -157,21 +157,35 @@ Requires [ccusage](https://www.npmjs.com/package/ccusage) on your `PATH`.
 
 ### Cursor IDE
 
-Export usage CSV from [cursor.com/dashboard/usage](https://cursor.com/dashboard/usage), then:
+**Option A — CSV export:**
+
+1. Go to [cursor.com/dashboard/usage](https://cursor.com/dashboard/usage) and export a CSV
+2. Run:
 
 ```bash
 ai-cost-compare cursor --file ~/Downloads/usage.csv --range 7 --cutoff 2026-05-13
 ```
 
-Optional API fetch (unofficial dashboard endpoint):
+**Option B — session token (auto-fetch):**
+
+1. Install the API extra: `pip install 'ai-cost-compare[cursor-api]'`
+2. Open any [cursor.com](https://cursor.com) page while logged in
+3. Open browser DevTools → **Application** → **Cookies** → `cursor.com`
+4. Copy the value of `WorkosCursorSessionToken`
+5. Add it to `~/.config/ai-cost-compare/config.toml` (created automatically on first run):
+
+```toml
+[cursor]
+session_token = "paste-your-token-here"
+```
+
+6. Run:
 
 ```bash
-pip install 'ai-cost-compare[cursor-api]'
-# ~/.config/ai-cost-compare/config.toml
-# [cursor]
-# session_token = "..."
 ai-cost-compare cursor --range 5
 ```
+
+The config file is created with instructions the first time you run `ai-cost-compare cursor`.
 
 ### Shared flags
 
